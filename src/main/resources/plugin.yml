@@ -1,0 +1,13 @@
+author: Crepez
+description: Adds seperate inventories per world and gamemode and stuff!
+main: de.cubenation.cninventories.CNInventoriesPlugin
+name: CNInventories
+version: "${project.version}"
+load: postworld
+api-version: 1.13
+depend:
+  - Bedrock
+database: false
+commands:
+    ${project.artifactId}:
+        description: CNInventories Settings Command
