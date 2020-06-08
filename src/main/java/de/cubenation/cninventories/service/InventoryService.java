@@ -11,9 +11,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 public class InventoryService extends AbstractService {
@@ -78,6 +80,9 @@ public class InventoryService extends AbstractService {
         c.set("saturation", player.getSaturation());
         c.set("exhaustion", player.getExhaustion());
 
+        PotionEffect[] effects = player.getActivePotionEffects().toArray(new PotionEffect[player.getActivePotionEffects().size()]);
+        c.set("potion-effects", effects);
+
         try {
             c.save(f);
         } catch (IOException e) {
@@ -102,6 +107,10 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
+        // clear current inventories
+        player.getInventory().clear();
+        player.getEnderChest().clear();
+        // apply saved inventories
         try {
 
             // populate player inventory
@@ -136,6 +145,13 @@ public class InventoryService extends AbstractService {
             player.setSaturation(c.getInt("saturation"));
         if(c.get("exhaustion") != null)
             player.setExhaustion(c.getInt("exhaustion"));
+
+        // clear current effects
+        for(PotionEffect effect : player.getActivePotionEffects())
+            player.removePotionEffect(effect.getType());
+        // apply saved effects
+        if(c.get("potion-effects") != null)
+            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
 
         return true;
     }
