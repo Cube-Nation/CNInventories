@@ -15,6 +15,7 @@ import de.cubenation.api.bedrock.exception.InsufficientPermissionException;
 import de.cubenation.api.bedrock.service.command.CommandManager;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
+import de.cubenation.cninventories.message.Messages;
 import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,8 +45,10 @@ public class InvZoneSetCommand extends Command {
 
         boolean success = createZoneWithWE(player, config, name);
 
-        //TODO: Messages.InvZone.Create(player, success);
-        player.sendMessage("Messages.InvZone.Create(player, success) : "+success);
+        if(success)
+            Messages.InvZoneSetSuccess(player);
+        else
+            Messages.InvZoneSetFail(player);
     }
 
     private boolean createZoneWithWE(Player player, InventoryZoneConfig config, String name) {
@@ -57,8 +60,7 @@ public class InvZoneSetCommand extends Command {
             selection = null;
         }
         if (selection == null) {
-            //TODO: Messages.InvZone.NoWESelection(player);
-            player.sendMessage("Messages.InvZone.NoWESelection(player)");
+            Messages.Error.ErrorNoWESelection(player);
             return false;
         }
 

@@ -10,6 +10,7 @@ import de.cubenation.cninventories.command.InvZoneSetCommand;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
+import de.cubenation.cninventories.config.locale.de_DE;
 import de.cubenation.cninventories.listener.PlayerListener;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
@@ -24,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)
 @ConfigurationFile(InventoryZoneConfig.class)
+@ConfigurationFile(de_DE.class)
 @Service(GroupService.class)
 @Service(InventoryService.class)
 @Service(InventoryZoneService.class)

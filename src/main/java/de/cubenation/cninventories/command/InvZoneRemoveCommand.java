@@ -13,6 +13,7 @@ import de.cubenation.api.bedrock.exception.InsufficientPermissionException;
 import de.cubenation.api.bedrock.service.command.CommandManager;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
+import de.cubenation.cninventories.message.Messages;
 import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,15 +33,16 @@ public class InvZoneRemoveCommand extends Command {
 
         InventoryZone zone = CNInventoriesPlugin.getInstance().getInventoryZoneService().getZoneAtLocation(player.getLocation());
         if(zone == null) {
-            //TODO: Messages.InvZone.Remove(player, success);
-            player.sendMessage("Messages.InvZone.Remove(player)");
+            Messages.Error.ErrorNoInvZoneAtLocation(player);
             return;
         }
 
         InventoryZoneConfig config = (InventoryZoneConfig) plugin.getConfigService().getConfig(InventoryZoneConfig.class);
         boolean success = config.removeZone(zone.getUuid());
 
-        //TODO: Messages.InvZone.Remove(player, success);
-        player.sendMessage("Messages.InvZone.Remove(player) : "+success);
+        if(success)
+            Messages.InvZoneRemoveSuccess(player);
+        else
+            Messages.InvZoneRemoveFail(player);
     }
 }

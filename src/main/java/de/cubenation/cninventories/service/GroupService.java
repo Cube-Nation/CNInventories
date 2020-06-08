@@ -17,7 +17,6 @@ import java.util.Set;
 public class GroupService extends AbstractService {
 
     CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
-    InventoryZoneService zoneService = plugin.getInventoryZoneService();
 
     private Map<String, Map<String, String>> groups = new HashMap<>();
 
