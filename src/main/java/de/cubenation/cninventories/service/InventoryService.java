@@ -7,8 +7,6 @@ import de.cubenation.api.bedrock.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.util.ItemStackUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -46,8 +44,12 @@ public class InventoryService extends AbstractService {
             throw new Exception("Could not create folder " + dir.getName());
     }
 
-    public boolean save(Player player, World world, GameMode mode) {
-        String group = CNInventoriesPlugin.getInstance().getGroupService().getGroup(world, mode);
+    public boolean save(Player player, String group) {
+        player.sendMessage("saving "+group+" ...");
+
+        // first close currently open inventories...
+        player.getOpenInventory().close();
+
         File groupDir = new File(this.groupsDirectory, group);
         try {
             createDataFolder(groupDir);
@@ -86,12 +88,15 @@ public class InventoryService extends AbstractService {
 
     public void saveAll() {
         List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-        for(Player p : onlinePlayers)
-            save(p, p.getWorld(), p.getGameMode());
+        for(Player p : onlinePlayers) {
+            String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
+            save(p, group);
+        }
     }
 
-    public boolean apply(Player player, World world, GameMode mode) {
-        String group = CNInventoriesPlugin.getInstance().getGroupService().getGroup(world, mode);
+    public boolean apply(Player player, String group) {
+        player.sendMessage("applying "+group+" ...");
+
         File groupDir = new File(this.groupsDirectory, group);
 
         File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
@@ -100,14 +105,16 @@ public class InventoryService extends AbstractService {
         try {
 
             // populate player inventory
-            ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
-            if(invContent != null)
+            if(c.getConfigurationSection("inventory") != null) {
+                ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
                 player.getInventory().setContents(invContent);
+            }
 
             // populate ender chest
-            ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
-            if(enderChestContent != null)
+            if(c.getConfigurationSection("ender-chest") != null) {
+                ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
                 player.getEnderChest().setContents(enderChestContent);
+            }
 
         } catch (IOException e) {
             return false;
@@ -135,7 +142,9 @@ public class InventoryService extends AbstractService {
 
     public void applyAll() {
         List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-        for(Player p : onlinePlayers)
-            apply(p, p.getWorld(), p.getGameMode());
+        for(Player p : onlinePlayers) {
+            String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
+            apply(p, group);
+        }
     }
 }

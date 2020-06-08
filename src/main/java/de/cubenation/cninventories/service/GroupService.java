@@ -4,9 +4,11 @@ import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.exception.ServiceInitException;
 import de.cubenation.api.bedrock.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
-import de.cubenation.cninventories.config.CNInventoriesConfig;
+import de.cubenation.cninventories.config.WorldConfig;
+import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.Set;
 public class GroupService extends AbstractService {
 
     CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
+    InventoryZoneService zoneService = plugin.getInventoryZoneService();
 
     private Map<String, Map<String, String>> groups = new HashMap<>();
 
@@ -26,8 +29,8 @@ public class GroupService extends AbstractService {
     public void init() throws ServiceInitException {
         // load new groups
         groups.clear();
-        CNInventoriesConfig config = (CNInventoriesConfig) plugin.getConfigService().getConfig(CNInventoriesConfig.class);
-        groups = config.getGroups();
+        WorldConfig config = (WorldConfig) plugin.getConfigService().getConfig(WorldConfig.class);
+        groups = config.getWorldGroups();
     }
 
     @Override
@@ -37,8 +40,8 @@ public class GroupService extends AbstractService {
 
         // load new groups
         groups.clear();
-        CNInventoriesConfig config = (CNInventoriesConfig) plugin.getConfigService().getConfig(CNInventoriesConfig.class);
-        groups = config.getGroups();
+        WorldConfig config = (WorldConfig) plugin.getConfigService().getConfig(WorldConfig.class);
+        groups = config.getWorldGroups();
 
         // apply groups
         // deactivated -> may result in inventory loss...
@@ -50,7 +53,7 @@ public class GroupService extends AbstractService {
         return groups.keySet();
     }
 
-    public String getGroup(World world, GameMode mode) {
+    public String getWorldGroup(World world, GameMode mode) {
         if(!isKnownWorld(world) || !isKnownMode(world, mode))
             return "default/"+mode.name().toLowerCase();
 
@@ -63,5 +66,14 @@ public class GroupService extends AbstractService {
 
     public boolean isKnownMode(World world, GameMode mode) {
         return this.groups.get(world.getName()).keySet().contains(mode.name().toLowerCase());
+    }
+
+    public String getCurrentGoupForPlayerManual(Player player, World world, GameMode mode) {
+        InventoryZone zone = plugin.getInventoryZoneService().getZoneForPlayer(player);
+        return zone != null ? zone.getGroup() : getWorldGroup(world, mode);
+    }
+
+    public String getCurrentGroupForPlayer(Player player) {
+        return getCurrentGoupForPlayerManual(player, player.getWorld(), player.getGameMode());
     }
 }

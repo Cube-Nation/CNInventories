@@ -6,9 +6,6 @@ import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Path;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class CNInventoriesConfig extends CustomConfigurationFile {
 
@@ -27,17 +24,6 @@ public class CNInventoriesConfig extends CustomConfigurationFile {
     @Comment("Time between inventory autosaves in minutes (-1 = no autosave)")
     @Path("autosave")
     private int autosaveTime = 30;
-
-    @Path("groups")
-    private Map<String, Map<String, String>> groups = new HashMap<>();
-
-    public Set<String> getWorldNames() {
-        return groups.keySet();
-    }
-
-    public Map<String, Map<String, String>> getGroups() {
-        return this.groups;
-    }
 
     public int getAutosaveTime() {
         return autosaveTime;
