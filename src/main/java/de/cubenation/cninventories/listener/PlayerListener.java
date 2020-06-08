@@ -6,7 +6,6 @@ import de.cubenation.cninventories.model.InventoryZone;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
 import de.cubenation.cninventories.service.InventoryZoneService;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -25,8 +24,6 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
-
-        player.sendMessage(ChatColor.GOLD+"[PlayerChangedWorldEvent start]");
 
         World from = event.getFrom();
         World world = player.getWorld();
@@ -59,14 +56,11 @@ public class PlayerListener implements Listener {
 
         // check for inventory zones
         handlePlayerChangeLocation(player);
-        player.sendMessage(ChatColor.GOLD+"[PlayerChangedWorldEvent end]");
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerGamemodeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-
-        player.sendMessage(ChatColor.GOLD+"[PlayerGameModeChangeEvent start]");
 
         World world = player.getWorld();
         GameMode from = player.getGameMode();
@@ -89,8 +83,6 @@ public class PlayerListener implements Listener {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
         }
-
-        player.sendMessage(ChatColor.GOLD+"[PlayerGameModeChangeEvent end]");
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -128,12 +120,8 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        player.sendMessage(ChatColor.GOLD+"[PlayerJoinEvent start]");
-
         // check for inventory zones
         handlePlayerChangeLocation(player);
-
-        player.sendMessage(ChatColor.GOLD+"[PlayerJoinEvent end]");
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -148,12 +136,8 @@ public class PlayerListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
 
-        player.sendMessage(ChatColor.GOLD+"[PlayerTeleportEvent start]");
-
         // check for inventory zones
         handlePlayerChangeLocation(player);
-
-        player.sendMessage(ChatColor.GOLD+"[PlayerTeleportEvent end]");
     }
 
     public void handlePlayerChangeLocation(Player player) {
@@ -165,7 +149,6 @@ public class PlayerListener implements Listener {
             if(newZone != null) {
                 // > player changed zone >
                 if(!prevZone.getGroup().equals(newZone.getGroup())) {
-                    player.sendMessage(ChatColor.DARK_GRAY+"> player changed zone >");
                     // inv-group changed -> load new inv-group
                     // save prev zone inv
                     invService.save(player, prevZone.getGroup());
@@ -177,7 +160,6 @@ public class PlayerListener implements Listener {
                 zoneService.addPlayerToInvZone(player, newZone);
             } else {
                 // > player left zone >
-                player.sendMessage(ChatColor.DARK_GRAY+"> player left zone >");
                 zoneService.removePlayerFromInvZone(player);
                 // save prev zone inv
                 invService.save(player, prevZone.getGroup());
@@ -187,7 +169,6 @@ public class PlayerListener implements Listener {
             }
         } else if(newZone != null) {
             // > player wasn't in inv-zone >
-            player.sendMessage(ChatColor.DARK_GRAY+"> player entered zone >");
             zoneService.addPlayerToInvZone(player, newZone);
 
             // save world inv

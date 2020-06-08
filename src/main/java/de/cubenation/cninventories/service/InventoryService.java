@@ -47,8 +47,6 @@ public class InventoryService extends AbstractService {
     }
 
     public boolean save(Player player, String group) {
-        player.sendMessage("saving "+group+" ...");
-
         // first close currently open inventories...
         player.getOpenInventory().close();
 
@@ -100,8 +98,6 @@ public class InventoryService extends AbstractService {
     }
 
     public boolean apply(Player player, String group) {
-        player.sendMessage("applying "+group+" ...");
-
         File groupDir = new File(this.groupsDirectory, group);
 
         File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
