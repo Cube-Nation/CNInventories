@@ -4,6 +4,7 @@ import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.annotation.*;
 import de.cubenation.api.bedrock.command.Command;
 import de.cubenation.api.bedrock.command.CommandRole;
+import de.cubenation.api.bedrock.ebean.BedrockPlayer;
 import de.cubenation.api.bedrock.exception.CommandException;
 import de.cubenation.api.bedrock.exception.IllegalCommandArgumentException;
 import de.cubenation.api.bedrock.exception.InsufficientPermissionException;
@@ -50,7 +51,7 @@ public class InventoryOpenCommand extends Command {
                 if (bedrockPlayers == null) {
                     MessageHelper.noSuchPlayer(plugin, player, args[0]);
                 } else {
-                    openGroupInventory(player, bedrockPlayers.getPlayer(), args[1]);
+                    openGroupInventory(player, bedrockPlayers, args[1]);
                 }
             }, e -> MessageHelper.noSuchPlayer(plugin, player, args[0]));
         } else {
@@ -58,13 +59,13 @@ public class InventoryOpenCommand extends Command {
                 if (bedrockPlayers == null || bedrockPlayers.isEmpty()) {
                     MessageHelper.noSuchPlayer(plugin, player, args[0]);
                 } else {
-                    openGroupInventory(player, bedrockPlayers.get(0).getPlayer(), args[1]);
+                    openGroupInventory(player, bedrockPlayers.get(0), args[1]);
                 }
             }, e -> MessageHelper.noSuchPlayer(plugin, player, args[0]));
         }
     }
 
-    private void openGroupInventory(Player player, Player target, String group) {
+    private void openGroupInventory(Player player, BedrockPlayer target, String group) {
         GroupViewerInventoryHolder holder = new GroupViewerInventoryHolder(player, target, group);
         player.openInventory(holder.getInventory());
     }

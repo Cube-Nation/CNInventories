@@ -71,10 +71,10 @@ public class Messages extends MessageHelper {
             new JsonMessage(plugin, "error.noinvzone.location").send(sender);
         }
 
-        public static void ErrorNoSuchInvGroup(CommandSender sender, String group, Player target) {
+        public static void ErrorNoSuchInvGroup(CommandSender sender, String group, String target) {
             new JsonMessage(plugin, "error.nosuchinvgroup",
                     "group", group,
-                    "target", target.getDisplayName()
+                    "target", target
             ).send(sender);
         }
     }

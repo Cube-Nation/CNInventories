@@ -1,5 +1,6 @@
 package de.cubenation.cninventories.model;
 
+import de.cubenation.api.bedrock.ebean.BedrockPlayer;
 import de.cubenation.api.bedrock.service.confirm.ConfirmRegistry;
 import de.cubenation.api.bedrock.service.confirm.ConfirmStorable;
 import de.cubenation.cninventories.CNInventoriesPlugin;
@@ -17,14 +18,14 @@ import java.io.IOException;
 public class GroupViewerInventoryHolder implements InventoryHolder {
 
     private Player player;
-    private Player target;
+    private BedrockPlayer target;
     private String group;
     private Inventory inv;
     private ItemStack[] prevContents;
 
     CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
 
-    public GroupViewerInventoryHolder(Player player, Player target, String group) {
+    public GroupViewerInventoryHolder(Player player, BedrockPlayer target, String group) {
         this.player = player;
         this.target = target;
         this.group = group;
@@ -33,13 +34,13 @@ public class GroupViewerInventoryHolder implements InventoryHolder {
         try {
             contents = loadCurrentContent();
         } catch (IOException e) {
-            Messages.Error.ErrorNoSuchInvGroup(player, group, target);
+            Messages.Error.ErrorNoSuchInvGroup(player, group, target.getUsername());
             return;
         }
         this.prevContents = contents;
 
         int rows = contents.length / 9 + ((contents.length % 9) > 0 ? 1 : 0);
-        inv = Bukkit.createInventory(this, rows*9, target.getDisplayName()+" - "+group);
+        inv = Bukkit.createInventory(this, rows*9, target.getUsername()+" - "+group);
         inv.setContents(contents);
     }
 
@@ -65,7 +66,7 @@ public class GroupViewerInventoryHolder implements InventoryHolder {
         }
         if(ItemStackUtil.areSameItemStacks(currContent, prevContents)) {
             //no changes other than own -> just save the content
-            boolean success = plugin.getInventoryStoreService().storePlayerInventoryContents(target, group, inv.getContents());
+            boolean success = plugin.getInventoryStoreService().storePlayerInventoryContents(target.getUUID(), group, inv.getContents());
             if(success)
                 Messages.InventoryContentUpdateSuccess(player);
             else
@@ -79,15 +80,13 @@ public class GroupViewerInventoryHolder implements InventoryHolder {
     }
 
     private ItemStack[] loadCurrentContent() throws IOException {
-        ItemStack[] contents = new ItemStack[target.getInventory().getSize()];
-        contents = plugin.getInventoryStoreService().getPlayerInventoryContents(target, group);
-        return contents;
+        return plugin.getInventoryStoreService().getPlayerInventoryContents(target.getUUID(), group, player.getInventory().getSize());
     }
 
-    private void createConfirm(Player player, Player target, String group, ItemStack[] contents) {
+    private void createConfirm(Player player, BedrockPlayer target, String group, ItemStack[] contents) {
         ConfirmOverrideInventory confirm = new ConfirmOverrideInventory(CNInventoriesPlugin.getInstance());
         confirm.store("sender", new ConfirmStorable<Object>(player));
-        confirm.store("target", new ConfirmStorable<Object>(target));
+        confirm.store("target", new ConfirmStorable<Object>(target.getUUID()));
         confirm.store("group", new ConfirmStorable<Object>(group));
         confirm.store("contents", new ConfirmStorable<Object>(contents));
 

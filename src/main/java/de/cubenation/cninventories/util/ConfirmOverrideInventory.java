@@ -7,8 +7,9 @@ import de.cubenation.api.bedrock.service.confirm.ConfirmRegistry;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.message.Messages;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 public class ConfirmOverrideInventory extends AbstractConfirmService {
 
@@ -30,7 +31,7 @@ public class ConfirmOverrideInventory extends AbstractConfirmService {
         }
 
         CommandSender sender = (CommandSender) this.get("sender").get();
-        Player target = (Player) this.get("target").get();
+        UUID target = (UUID) this.get("target").get();
         String group = (String) this.get("group").get();
         ItemStack[] contents = (ItemStack[]) this.get("contents").get();
 

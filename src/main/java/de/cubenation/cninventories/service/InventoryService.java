@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class InventoryService extends AbstractService {
 
@@ -46,7 +47,7 @@ public class InventoryService extends AbstractService {
             throw new Exception("Could not create folder " + dir.getName());
     }
 
-    public boolean storePlayerInventoryContents(Player player, String group, ItemStack[] contents) {
+    public boolean storePlayerInventoryContents(UUID uuid, String group, ItemStack[] contents) {
         File groupDir = new File(this.groupsDirectory, group);
         try {
             createDataFolder(groupDir);
@@ -54,7 +55,7 @@ public class InventoryService extends AbstractService {
             return false;
         }
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         c.set("inventory", ItemStackUtil.convertArrayToMap(contents));
@@ -67,7 +68,7 @@ public class InventoryService extends AbstractService {
         return true;
     }
 
-    public boolean storeEnderchestContents(Player player, String group, ItemStack[] contents) {
+    public boolean storeEnderchestContents(UUID uuid, String group, ItemStack[] contents) {
         File groupDir = new File(this.groupsDirectory, group);
         try {
             createDataFolder(groupDir);
@@ -75,7 +76,7 @@ public class InventoryService extends AbstractService {
             return false;
         }
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         c.set("ender-chest", ItemStackUtil.convertArrayToMap(contents));
@@ -139,26 +140,26 @@ public class InventoryService extends AbstractService {
         }
     }
 
-    public ItemStack[] getPlayerInventoryContents(Player player, String group) throws IOException {
+    public ItemStack[] getPlayerInventoryContents(UUID uuid, String group, int size) throws IOException {
         File groupDir = new File(this.groupsDirectory, group);
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         if(c.getConfigurationSection("inventory") == null)
             throw new IOException("Inventory is not existent.");
-        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
+        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), size);
     }
 
-    public ItemStack[] getEnderchestContents(Player player, String group) throws IOException {
+    public ItemStack[] getEnderchestContents(UUID uuid, String group, int size) throws IOException {
         File groupDir = new File(this.groupsDirectory, group);
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         if(c.getConfigurationSection("ender-chest") == null)
             throw new IOException("Inventory is not existent.");
-        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
+        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), size);
     }
 
     public boolean apply(Player player, String group) {
