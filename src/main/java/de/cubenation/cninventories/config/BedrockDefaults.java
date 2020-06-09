@@ -14,7 +14,7 @@ public class BedrockDefaults extends de.cubenation.api.bedrock.config.BedrockDef
 
         this.setLocalizationLocale("de_DE");
 
-        this.setPermissionPrefix("cncampfiretools");
+        this.setPermissionPrefix("cninventories");
 
 
         this.setColorSchemeName("CUSTOM");
