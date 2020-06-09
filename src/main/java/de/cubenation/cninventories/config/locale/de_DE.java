@@ -2,6 +2,7 @@ package de.cubenation.cninventories.config.locale;
 
 import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.service.config.CustomConfigurationFile;
+import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Path;
 
 import java.io.File;
@@ -73,6 +74,21 @@ public class de_DE extends CustomConfigurationFile {
 
     @Path("inventory.content.update.fail")
     private String inventoryContentUpdateFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Der Inventarinhalt konnte nicht überschrieben werden!\",\"color\":\"red\"}]}";
+
+    //  CONFIRM
+
+    @Comment("Args: %commandinfo%")
+    @Path("confirm.overrideinventory")
+    private String confirmOverrideinventory = "{\"text\":\"\",\"extra\":[{\"text\":\"%plugin_prefix%\"},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"<?>\",\"color\":\"dark_gray\"},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"Das Inventar wurde in der Zwischenzeit abgeändert. Klicke hier wenn du die Änderungen mit deinen überschreiben möchtest, oder gebe '/inventory cancel' ein\",\"color\":\"&TEXT&\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%command%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"%commandinfo%\"}}]}";
+
+    @Path("confirm.timeout")
+    private String confirmTimeout = "{\"text\":\"\",\"extra\":[{\"text\":\"%plugin_prefix%\"},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"Du warst leider nicht schnell genug. Bitte versuche es erneut.\",\"color\":\"&TEXT&\"}]}";
+
+    @Path("confirm.nothing")
+    private String confirmNothing = "{\"text\":\"\",\"extra\":[{\"text\":\"%plugin_prefix%\"},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"Du hast nichts zum Bestätigen!\",\"color\":\"&TEXT&\"}]}";
+
+    @Path("confirm.cancel")
+    private String confirmCancel = "{\"text\":\"\",\"extra\":[{\"text\":\"%plugin_prefix%\"},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"Bestätigung abgebrochen!\",\"color\":\"&TEXT&\"}]}";
 
     /**
      * Error

@@ -4,10 +4,7 @@ import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.annotation.CommandHandler;
 import de.cubenation.api.bedrock.annotation.ConfigurationFile;
 import de.cubenation.api.bedrock.annotation.Service;
-import de.cubenation.cninventories.command.InventoryOpenCommand;
-import de.cubenation.cninventories.command.InventoryZoneModifyGroupCommand;
-import de.cubenation.cninventories.command.InventoryZoneRemoveCommand;
-import de.cubenation.cninventories.command.InventoryZoneSetCommand;
+import de.cubenation.cninventories.command.*;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
@@ -24,6 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
         InventoryZoneRemoveCommand.class,
         InventoryZoneModifyGroupCommand.class,
         InventoryOpenCommand.class,
+        InventoryConfirmCommand.class,
+        InventoryCancelCommand.class,
 })
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)

@@ -145,6 +145,8 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
+        if(c.getConfigurationSection("inventory") == null)
+            throw new IOException("Inventory is not existent.");
         return ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
     }
 
@@ -154,6 +156,8 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
+        if(c.getConfigurationSection("ender-chest") == null)
+            throw new IOException("Inventory is not existent.");
         return ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
     }
 

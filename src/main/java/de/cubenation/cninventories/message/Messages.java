@@ -42,6 +42,26 @@ public class Messages extends MessageHelper {
         new JsonMessage(plugin, "inventory.content.update.fail").send(sender);
     }
 
+    public static class Confirm {
+
+        public static void OverrideInventory(Player player) {
+            String commandinfo = getPlainText(plugin, "plaintext.confirm.command.info", "command", "Oder gebe '/inventory confirm' ein");
+            new JsonMessage(plugin, "confirm.overrideinventory", "command", "/inventory confirm", "commandinfo", commandinfo).send(player);
+        }
+
+        public static void Timeout(CommandSender sender) {
+            new JsonMessage(plugin, "confirm.timeout").send(sender);
+        }
+
+        public static void Cancel(CommandSender sender) {
+            new JsonMessage(plugin, "confirm.cancel").send(sender);
+        }
+
+        public static void Nothing(CommandSender player) {
+            new JsonMessage(plugin, "confirm.nothing").send(player);
+        }
+    }
+
     public static class Error {
         public static void ErrorNoWESelection(CommandSender sender) {
             new JsonMessage(plugin, "error.noweselection").send(sender);
