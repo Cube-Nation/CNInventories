@@ -1,10 +1,7 @@
 package de.cubenation.cninventories.command;
 
 import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.annotation.Argument;
-import de.cubenation.api.bedrock.annotation.Description;
-import de.cubenation.api.bedrock.annotation.IngameCommand;
-import de.cubenation.api.bedrock.annotation.Permission;
+import de.cubenation.api.bedrock.annotation.*;
 import de.cubenation.api.bedrock.command.Command;
 import de.cubenation.api.bedrock.command.CommandRole;
 import de.cubenation.api.bedrock.exception.CommandException;
@@ -21,7 +18,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-@Description("command.openinvgroup.desc")
+@Description("command.inventory.open.desc")
+@SubCommand({"open"})
 @Argument(
         Description = "command.inventory.args.player.desc",
         Placeholder = "command.inventory.args.player.ph"
@@ -30,11 +28,11 @@ import java.util.ArrayList;
         Description = "command.inventory.args.group.desc",
         Placeholder = "command.inventory.args.group.ph"
 )
-@Permission(Name = "openinvgroup", Role = CommandRole.ADMIN)
+@Permission(Name = "inventory.open", Role = CommandRole.MODERATOR)
 @IngameCommand
-public class OpenInvGroupCommand extends Command {
+public class InventoryOpenCommand extends Command {
 
-    public OpenInvGroupCommand(BasePlugin plugin, CommandManager commandManager) {
+    public InventoryOpenCommand(BasePlugin plugin, CommandManager commandManager) {
         super(plugin, commandManager);
     }
 

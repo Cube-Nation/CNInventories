@@ -23,17 +23,18 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Description("command.invzone.set.desc")
+@Description("command.inventory.zone.set.desc")
+@SubCommand({"zone"})
 @SubCommand("set")
 @Argument(
         Description = "command.inventory.args.group.desc",
         Placeholder = "command.inventory.args.group.ph"
 )
-@Permission(Name = "invzone.set", Role = CommandRole.ADMIN)
+@Permission(Name = "inventory.zone.set", Role = CommandRole.ADMIN)
 @IngameCommand
-public class InvZoneSetCommand extends Command {
+public class InventoryZoneSetCommand extends Command {
 
-    public InvZoneSetCommand(BasePlugin plugin, CommandManager commandManager) {
+    public InventoryZoneSetCommand(BasePlugin plugin, CommandManager commandManager) {
         super(plugin, commandManager);
     }
 

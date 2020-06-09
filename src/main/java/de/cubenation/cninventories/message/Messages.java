@@ -11,27 +11,27 @@ public class Messages extends MessageHelper {
     public static CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
 
     public static void InvZoneSetSuccess(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.set.success").send(sender);
+        new JsonMessage(plugin, "inventory.zone.set.success").send(sender);
     }
 
     public static void InvZoneSetFail(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.set.fail").send(sender);
+        new JsonMessage(plugin, "inventory.zone.set.fail").send(sender);
     }
 
     public static void InvZoneRemoveSuccess(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.remove.success").send(sender);
+        new JsonMessage(plugin, "inventory.zone.remove.success").send(sender);
     }
 
     public static void InvZoneRemoveFail(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.remove.fail").send(sender);
+        new JsonMessage(plugin, "inventory.zone.remove.fail").send(sender);
     }
 
     public static void InvZoneModifyGroupSuccess(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.modify.group.success").send(sender);
+        new JsonMessage(plugin, "inventory.zone.modify.group.success").send(sender);
     }
 
     public static void InvZoneModifyGroupFail(CommandSender sender) {
-        new JsonMessage(plugin, "invzone.modify.group.fail").send(sender);
+        new JsonMessage(plugin, "inventory.zone.modify.group.fail").send(sender);
     }
 
     public static void InventoryContentUpdateSuccess(CommandSender sender) {

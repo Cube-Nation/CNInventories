@@ -1,10 +1,7 @@
 package de.cubenation.cninventories.command;
 
 import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.annotation.Description;
-import de.cubenation.api.bedrock.annotation.IngameCommand;
-import de.cubenation.api.bedrock.annotation.Permission;
-import de.cubenation.api.bedrock.annotation.SubCommand;
+import de.cubenation.api.bedrock.annotation.*;
 import de.cubenation.api.bedrock.command.Command;
 import de.cubenation.api.bedrock.command.CommandRole;
 import de.cubenation.api.bedrock.exception.CommandException;
@@ -13,18 +10,27 @@ import de.cubenation.api.bedrock.exception.InsufficientPermissionException;
 import de.cubenation.api.bedrock.service.command.CommandManager;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
+import de.cubenation.cninventories.config.WorldConfig;
 import de.cubenation.cninventories.message.Messages;
 import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@Description("command.invzone.remove.desc")
-@SubCommand({"remove", "delete"})
-@Permission(Name = "invzone.remove", Role = CommandRole.ADMIN)
-@IngameCommand
-public class InvZoneRemoveCommand extends Command {
+import java.util.ArrayList;
 
-    public InvZoneRemoveCommand(BasePlugin plugin, CommandManager commandManager) {
+@Description("command.inventory.zone.modify.group.desc")
+@SubCommand({"zone"})
+@SubCommand({"modify"})
+@SubCommand({"group"})
+@Argument(
+        Description = "command.inventory.args.group.desc",
+        Placeholder = "command.inventory.args.group.ph"
+)
+@Permission(Name = "inventory.zone.modify.group", Role = CommandRole.ADMIN)
+@IngameCommand
+public class InventoryZoneModifyGroupCommand extends Command {
+
+    public InventoryZoneModifyGroupCommand(BasePlugin plugin, CommandManager commandManager) {
         super(plugin, commandManager);
     }
 
@@ -38,11 +44,21 @@ public class InvZoneRemoveCommand extends Command {
         }
 
         InventoryZoneConfig config = (InventoryZoneConfig) plugin.getConfigService().getConfig(InventoryZoneConfig.class);
-        boolean success = config.removeZone(zone.getUuid());
+        boolean success = config.updateGroup(zone.getUuid(), args[0]);
 
         if(success)
-            Messages.InvZoneRemoveSuccess(player);
+            Messages.InvZoneModifyGroupSuccess(player);
         else
-            Messages.InvZoneRemoveFail(player);
+            Messages.InvZoneModifyGroupFail(player);
+    }
+
+    @Override
+    public ArrayList<String> getTabArgumentCompletion(CommandSender sender, int argumentIndex, String[] args) {
+        if (argumentIndex == 0) {
+            WorldConfig config = (WorldConfig) plugin.getConfigService().getConfig(WorldConfig.class);
+            return new ArrayList<>(config.getGroups());
+        }
+
+        return null;
     }
 }

@@ -22,21 +22,21 @@ public class de_DE extends CustomConfigurationFile {
      * Commands
      */
 
-    @Path("command.invzone.set.desc")
+    @Path("command.inventory.zone.set.desc")
     private String commandInvzoneSetDesc = "Setzt eine Inventar-Zone.";
 
-    @Path("command.invzone.remove.desc")
+    @Path("command.inventory.zone.remove.desc")
     private String commandInvzoneRemoveDesc = "Löscht eine Inventar-Zone in der du dich befindest.";
 
-    @Path("command.invzone.modify.group.desc")
+    @Path("command.inventory.zone.modify.group.desc")
     private String commandInvzoneModifyGroupDesc = "Ändert die Gruppe der Inventar-Zone in der du dich befindest.";
 
-    @Path("command.openinvgroup.desc")
+    @Path("command.inventory.open.desc")
     private String commandOpeninvgroupDesc = "Öffnet die Inventar-Gruppe eines Spielers.";
 
     @Path("command.inventory.args.group")
     private HashMap<String, String> commandInventoryArgsGroup = new HashMap<String, String>() {{
-        put("desc", "Der relative Pfad unter welchem das Inventar gespeichert werden soll.");
+        put("desc", "einzigartige Gruppen-ID");
         put("ph", "Gruppe");
     }};
 
@@ -50,23 +50,23 @@ public class de_DE extends CustomConfigurationFile {
      * Command Messages
      */
 
-    @Path("invzone.set.success")
-    private String invzoneSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
+    @Path("inventory.zone.set.success")
+    private String inventoryZoneSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
 
-    @Path("invzone.set.fail")
-    private String invzoneSetFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht erstellt werden!\",\"color\":\"red\"}]}";
+    @Path("inventory.zone.set.fail")
+    private String inventoryZoneSetFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht erstellt werden!\",\"color\":\"red\"}]}";
 
-    @Path("invzone.remove.success")
-    private String invzoneRemoveSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
+    @Path("inventory.zone.remove.success")
+    private String inventoryZoneRemoveSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
 
-    @Path("invzone.remove.fail")
-    private String invzoneRemoveFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht gelöscht werden!\",\"color\":\"red\"}]}";
+    @Path("inventory.zone.remove.fail")
+    private String inventoryZoneRemoveFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht gelöscht werden!\",\"color\":\"red\"}]}";
 
-    @Path("invzone.modify.group.success")
-    private String invzoneModifyGroupSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe wurde erfolgreich bearbeitet!\",\"color\":\"&SECONDARY&\"}]}";
+    @Path("inventory.zone.modify.group.success")
+    private String inventoryZoneModifyGroupSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe wurde erfolgreich bearbeitet!\",\"color\":\"&SECONDARY&\"}]}";
 
-    @Path("invzone.modify.group.fail")
-    private String invzoneModifyGroupFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe konnte nicht bearbeitet werden!\",\"color\":\"red\"}]}";
+    @Path("inventory.zone.modify.group.fail")
+    private String inventoryZoneModifyGroupFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe konnte nicht bearbeitet werden!\",\"color\":\"red\"}]}";
 
     @Path("inventory.content.update.success")
     private String inventoryContentUpdateSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Der Inventarinhalt wurde erfolgreich überschrieben!\",\"color\":\"&SECONDARY&\"}]}";

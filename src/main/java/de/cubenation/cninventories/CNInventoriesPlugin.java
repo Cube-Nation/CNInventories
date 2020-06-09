@@ -4,10 +4,10 @@ import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.annotation.CommandHandler;
 import de.cubenation.api.bedrock.annotation.ConfigurationFile;
 import de.cubenation.api.bedrock.annotation.Service;
-import de.cubenation.cninventories.command.InvZoneModifyGroupCommand;
-import de.cubenation.cninventories.command.InvZoneRemoveCommand;
-import de.cubenation.cninventories.command.InvZoneSetCommand;
-import de.cubenation.cninventories.command.OpenInvGroupCommand;
+import de.cubenation.cninventories.command.InventoryOpenCommand;
+import de.cubenation.cninventories.command.InventoryZoneModifyGroupCommand;
+import de.cubenation.cninventories.command.InventoryZoneRemoveCommand;
+import de.cubenation.cninventories.command.InventoryZoneSetCommand;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
@@ -19,13 +19,11 @@ import de.cubenation.cninventories.service.InventoryService;
 import de.cubenation.cninventories.service.InventoryZoneService;
 import org.bukkit.scheduler.BukkitRunnable;
 
-@CommandHandler(Command = "invzone", Handlers = {
-        InvZoneSetCommand.class,
-        InvZoneRemoveCommand.class,
-        InvZoneModifyGroupCommand.class,
-})
-@CommandHandler(Command = "openinvgroup", Handlers = {
-        OpenInvGroupCommand.class
+@CommandHandler(Command = "inventory", Handlers = {
+        InventoryZoneSetCommand.class,
+        InventoryZoneRemoveCommand.class,
+        InventoryZoneModifyGroupCommand.class,
+        InventoryOpenCommand.class,
 })
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)
