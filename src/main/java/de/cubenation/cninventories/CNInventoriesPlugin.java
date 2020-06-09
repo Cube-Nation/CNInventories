@@ -7,10 +7,12 @@ import de.cubenation.api.bedrock.annotation.Service;
 import de.cubenation.cninventories.command.InvZoneModifyGroupCommand;
 import de.cubenation.cninventories.command.InvZoneRemoveCommand;
 import de.cubenation.cninventories.command.InvZoneSetCommand;
+import de.cubenation.cninventories.command.OpenInvGroupCommand;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
 import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
 import de.cubenation.cninventories.config.locale.de_DE;
+import de.cubenation.cninventories.listener.InventoryListener;
 import de.cubenation.cninventories.listener.PlayerListener;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
@@ -21,6 +23,9 @@ import org.bukkit.scheduler.BukkitRunnable;
         InvZoneSetCommand.class,
         InvZoneRemoveCommand.class,
         InvZoneModifyGroupCommand.class,
+})
+@CommandHandler(Command = "openinvgroup", Handlers = {
+        OpenInvGroupCommand.class
 })
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)
@@ -45,6 +50,7 @@ public class CNInventoriesPlugin extends BasePlugin {
     @Override
     protected void onPostEnable() throws Exception {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         scheduleTasks();
     }

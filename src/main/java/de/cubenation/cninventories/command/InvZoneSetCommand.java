@@ -26,8 +26,8 @@ import java.util.UUID;
 @Description("command.invzone.set.desc")
 @SubCommand("set")
 @Argument(
-        Description = "command.invzone.args.group.desc",
-        Placeholder = "command.invzone.args.group.ph"
+        Description = "command.inventory.args.group.desc",
+        Placeholder = "command.inventory.args.group.ph"
 )
 @Permission(Name = "invzone.set", Role = CommandRole.ADMIN)
 @IngameCommand

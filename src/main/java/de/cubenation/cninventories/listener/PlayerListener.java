@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
         GameMode mode = event.getNewGameMode();
 
         // always save the current inventory
-        String prevGroup = groupService.getCurrentGoupForPlayerManual(player, world, from);
+        String prevGroup = groupService.getCurrentGroupForPlayerManual(player, world, from);
         invService.save(player, prevGroup);
 
         if(zoneService.getZoneForPlayer(player) != null)

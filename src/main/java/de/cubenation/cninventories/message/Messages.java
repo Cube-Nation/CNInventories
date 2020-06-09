@@ -4,6 +4,7 @@ import de.cubenation.api.bedrock.helper.MessageHelper;
 import de.cubenation.api.bedrock.translation.JsonMessage;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class Messages extends MessageHelper {
 
@@ -33,6 +34,14 @@ public class Messages extends MessageHelper {
         new JsonMessage(plugin, "invzone.modify.group.fail").send(sender);
     }
 
+    public static void InventoryContentUpdateSuccess(CommandSender sender) {
+        new JsonMessage(plugin, "inventory.content.update.success").send(sender);
+    }
+
+    public static void InventoryContentUpdateFail(CommandSender sender) {
+        new JsonMessage(plugin, "inventory.content.update.fail").send(sender);
+    }
+
     public static class Error {
         public static void ErrorNoWESelection(CommandSender sender) {
             new JsonMessage(plugin, "error.noweselection").send(sender);
@@ -40,6 +49,13 @@ public class Messages extends MessageHelper {
 
         public static void ErrorNoInvZoneAtLocation(CommandSender sender) {
             new JsonMessage(plugin, "error.noinvzone.location").send(sender);
+        }
+
+        public static void ErrorNoSuchInvGroup(CommandSender sender, String group, Player target) {
+            new JsonMessage(plugin, "error.nosuchinvgroup",
+                    "group", group,
+                    "target", target.getDisplayName()
+            ).send(sender);
         }
     }
 }

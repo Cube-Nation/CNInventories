@@ -12,5 +12,7 @@ database: false
 commands:
     invzone:
         description: Command for managing Inventory Zones
+    openinvgroup:
+      description: Look into a players inventory
     ${project.artifactId}:
         description: CNInventories Settings Command

@@ -67,12 +67,12 @@ public class GroupService extends AbstractService {
         return this.groups.get(world.getName()).keySet().contains(mode.name().toLowerCase());
     }
 
-    public String getCurrentGoupForPlayerManual(Player player, World world, GameMode mode) {
+    public String getCurrentGroupForPlayerManual(Player player, World world, GameMode mode) {
         InventoryZone zone = plugin.getInventoryZoneService().getZoneForPlayer(player);
         return zone != null ? zone.getGroup() : getWorldGroup(world, mode);
     }
 
     public String getCurrentGroupForPlayer(Player player) {
-        return getCurrentGoupForPlayerManual(player, player.getWorld(), player.getGameMode());
+        return getCurrentGroupForPlayerManual(player, player.getWorld(), player.getGameMode());
     }
 }
