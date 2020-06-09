@@ -3,6 +3,7 @@ package de.cubenation.cninventories.config;
 import de.cubenation.api.bedrock.BasePlugin;
 import de.cubenation.api.bedrock.service.config.CustomConfigurationFile;
 import net.cubespace.Yamler.Config.Path;
+import org.bukkit.GameMode;
 
 import java.io.File;
 import java.util.*;
@@ -36,6 +37,8 @@ public class WorldConfig extends CustomConfigurationFile {
         Set<String> res = new LinkedHashSet<>();
         for(Map.Entry<String, Map<String, String>> entry : groups.entrySet())
             res.addAll(entry.getValue().values());
+        for(GameMode mode : GameMode.values())
+            res.add("default/"+mode.name().toLowerCase());
         return new ArrayList<>(res);
     }
 

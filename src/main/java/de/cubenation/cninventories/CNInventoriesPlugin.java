@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
         InventoryZoneRemoveCommand.class,
         InventoryZoneModifyGroupCommand.class,
         InventoryOpenCommand.class,
+        InventoryOpenEnderChestCommand.class,
         InventoryConfirmCommand.class,
         InventoryCancelCommand.class,
 })
