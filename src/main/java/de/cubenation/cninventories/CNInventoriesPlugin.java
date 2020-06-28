@@ -16,6 +16,9 @@ import de.cubenation.cninventories.service.InventoryService;
 import de.cubenation.cninventories.service.InventoryZoneService;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@CommandHandler(Command = "cninventories", Handlers = {
+        CNInventoriesConvertCommand.class,
+})
 @CommandHandler(Command = "inventory", Handlers = {
         InventoryZoneSetCommand.class,
         InventoryZoneRemoveCommand.class,
