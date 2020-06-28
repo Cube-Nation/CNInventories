@@ -51,6 +51,8 @@ public class CNInventoriesConvertCommand extends Command {
                         @Override
                         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                             String relative = fileGroupsXi.toURI().relativize(dir.toUri()).getPath();
+                            if(!relative.equals("") && !relative.startsWith("default/") && !relative.startsWith("museum/"))
+                                return FileVisitResult.SKIP_SUBTREE;
                             plugin.getLogger().info("Converting "+relative+"...");
                             new File(fileGroupsCi, relative).mkdirs();
                             return FileVisitResult.CONTINUE;
@@ -66,10 +68,17 @@ public class CNInventoriesConvertCommand extends Command {
                         @Override
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                             String relative = fileGroupsXi.toURI().relativize(file.toUri()).getPath();
+                            plugin.getLogger().info("* converting "+relative+"...");
 
                             File fileXi = new File(fileGroupsXi, relative);
                             File fileCi = new File(fileGroupsCi, relative);
-                            FileConfiguration cXi = YamlConfiguration.loadConfiguration(fileXi);
+                            FileConfiguration cXi = null;
+                            try {
+                                cXi = YamlConfiguration.loadConfiguration(fileXi);
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().info("* conversion of "+relative+" failed with IllegalArgument exception: "+e.getMessage());
+                                return FileVisitResult.CONTINUE;
+                            }
                             FileConfiguration cCi = YamlConfiguration.loadConfiguration(fileCi);
 
                             if(cXi.getConfigurationSection("inventory") != null) {
@@ -123,7 +132,6 @@ public class CNInventoriesConvertCommand extends Command {
                                 cCi.save(fileCi);
                             } catch (IOException e) {
                                 plugin.getLogger().severe(relative+" could not be saved!");
-                                e.printStackTrace();
                             }
                             return FileVisitResult.CONTINUE;
                         }
