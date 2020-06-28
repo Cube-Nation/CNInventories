@@ -192,20 +192,37 @@ public class InventoryService extends AbstractService {
 
         if(c.get("health") != null)
             player.setHealth(c.getDouble("health"));
+        else
+            player.setHealth(20.0);
+
         if(c.get("hunger") != null)
             player.setFoodLevel(c.getInt("hunger"));
+        else
+            player.setFoodLevel(20);
+
         if(c.get("exp") != null)
             player.setExp(Float.parseFloat(c.getString("exp")));
+
         if(c.get("exp-level") != null)
             player.setLevel(c.getInt("exp-level"));
+
         if(c.get("remaining-air") != null)
             player.setRemainingAir(c.getInt("remaining-air"));
+
+        else
+            player.setRemainingAir(300);
+
         if(c.get("fire-ticks") != null)
             player.setFireTicks(c.getInt("fire-ticks"));
+        else
+            player.setFireTicks(-20);
+
         if(c.get("saturation") != null)
             player.setSaturation(c.getInt("saturation"));
+
         if(c.get("exhaustion") != null)
             player.setExhaustion(c.getInt("exhaustion"));
+
 
         // clear current effects
         for(PotionEffect effect : player.getActivePotionEffects())
