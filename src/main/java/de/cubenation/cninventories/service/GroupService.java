@@ -35,7 +35,7 @@ public class GroupService extends AbstractService {
     @Override
     public void reload() {
         // save old Inventories
-        CNInventoriesPlugin.getInstance().getInventoryStoreService().saveAll();
+        CNInventoriesPlugin.getInstance().getInventoryStoreService().saveAll(true);
 
         // load new groups
         groups.clear();

@@ -90,8 +90,12 @@ public class InventoryService extends AbstractService {
     }
 
     public boolean save(Player player, String group) {
-        // first close currently open inventories...
-        player.getOpenInventory().close();
+        return save(player, group, true);
+    }
+
+    public boolean save(Player player, String group, boolean closeInv) {
+        if(closeInv)
+            player.closeInventory();
 
         File groupDir = new File(this.groupsDirectory, group);
         try {
@@ -132,11 +136,11 @@ public class InventoryService extends AbstractService {
         return true;
     }
 
-    public void saveAll() {
+    public void saveAll(boolean closeInv) {
         List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
         for(Player p : onlinePlayers) {
             String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
-            save(p, group);
+            save(p, group, closeInv);
         }
     }
 

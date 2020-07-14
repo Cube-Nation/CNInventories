@@ -60,7 +60,7 @@ public class CNInventoriesPlugin extends BasePlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getInventoryStoreService().saveAll();
+                    getInventoryStoreService().saveAll(false);
                 }
             }.runTaskTimer(this, 20 * 60 * config.getAutosaveTime(), 20 * 60 * config.getAutosaveTime());
         }
