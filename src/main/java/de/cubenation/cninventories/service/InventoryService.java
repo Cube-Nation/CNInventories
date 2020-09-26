@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class InventoryService extends AbstractService {
 
@@ -101,6 +102,11 @@ public class InventoryService extends AbstractService {
         try {
             createDataFolder(groupDir);
         } catch (Exception e) {
+            plugin.log(
+                    Level.SEVERE,
+                    "Inventory of player '"+player.getDisplayName()+"' could not be saved! " +
+                            "The directory '"+groupDir.getAbsolutePath()+"' refused to be created..."
+            );
             return false;
         }
 
@@ -131,6 +137,11 @@ public class InventoryService extends AbstractService {
         try {
             c.save(f);
         } catch (IOException e) {
+            plugin.log(
+                    Level.SEVERE,
+                    "Inventory of player '"+player.getDisplayName()+"' could not be saved! " +
+                            "Well that sucks..."
+            );
             return false;
         }
         return true;
@@ -187,10 +198,18 @@ public class InventoryService extends AbstractService {
             // populate ender chest
             if(c.getConfigurationSection("ender-chest") != null) {
                 ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
+
+
+
                 player.getEnderChest().setContents(enderChestContent);
             }
 
         } catch (IOException e) {
+            plugin.log(
+                    Level.SEVERE,
+                    "Inventory of player '"+player.getDisplayName()+"' could not be applied! " +
+                            "Well that sucks..."
+            );
             return false;
         }
 
@@ -212,7 +231,101 @@ public class InventoryService extends AbstractService {
 
         if(c.get("remaining-air") != null)
             player.setRemainingAir(c.getInt("remaining-air"));
+        else
+            player.setRemainingAir(300);
 
+        if(c.get("fire-ticks") != null)
+            player.setFireTicks(c.getInt("fire-ticks"));
+        else
+            player.setFireTicks(-20);
+
+        if(c.get("saturation") != null)
+            player.setSaturation(c.getInt("saturation"));
+
+        if(c.get("exhaustion") != null)
+            player.setExhaustion(c.getInt("exhaustion"));
+
+
+        // clear current effects
+        for(PotionEffect effect : player.getActivePotionEffects())
+            player.removePotionEffect(effect.getType());
+        // apply saved effects
+        if(c.get("potion-effects") != null)
+            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
+
+        return true;
+    }
+
+    // Same as apply but with extensive logging in case of mismatch
+    public boolean safeApply(Player player, String group) {
+        File groupDir = new File(this.groupsDirectory, group);
+
+        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+
+        // clear current inventories
+        player.getInventory().clear();
+        player.getEnderChest().clear();
+        // apply saved inventories
+        try {
+
+            // populate player inventory
+            if(c.getConfigurationSection("inventory") != null) {
+                ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
+
+                if(!invContent.equals(player.getInventory().getContents())) {
+                    plugin.log(
+                            Level.WARNING,
+                            "Mismatch between '"+player.getDisplayName()+"'s inventory and the saved version! " +
+                                    "Reapplying saved version..."
+                    );
+                }
+
+                player.getInventory().setContents(invContent);
+            }
+
+            // populate ender chest
+            if(c.getConfigurationSection("ender-chest") != null) {
+                ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
+
+                if(!enderChestContent.equals(player.getEnderChest().getContents())) {
+                    plugin.log(
+                            Level.WARNING,
+                            "Mismatch between '"+player.getDisplayName()+"'s ender chest and the saved version! " +
+                                    "Reapplying saved version..."
+                    );
+                }
+
+                player.getEnderChest().setContents(enderChestContent);
+            }
+
+        } catch (IOException e) {
+            plugin.log(
+                    Level.SEVERE,
+                    "Inventory of player '"+player.getDisplayName()+"' could not be applied! " +
+                            "Well that sucks..."
+            );
+            return false;
+        }
+
+        if(c.get("health") != null)
+            player.setHealth(c.getDouble("health"));
+        else
+            player.setHealth(20.0);
+
+        if(c.get("hunger") != null)
+            player.setFoodLevel(c.getInt("hunger"));
+        else
+            player.setFoodLevel(20);
+
+        if(c.get("exp") != null)
+            player.setExp(Float.parseFloat(c.getString("exp")));
+
+        if(c.get("exp-level") != null)
+            player.setLevel(c.getInt("exp-level"));
+
+        if(c.get("remaining-air") != null)
+            player.setRemainingAir(c.getInt("remaining-air"));
         else
             player.setRemainingAir(300);
 
@@ -244,5 +357,24 @@ public class InventoryService extends AbstractService {
             String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
             apply(p, group);
         }
+    }
+
+    private boolean isInventoryContentEmpty(ItemStack[] items) {
+        for(ItemStack itemStack : items) {
+            if (itemStack != null) return false;
+        }
+        return true;
+    }
+
+    private boolean isPlayerInventoryEmpty(Player player) {
+        return isInventoryContentEmpty(player.getInventory().getContents());
+    }
+
+    private boolean isPlayerEnderChestEmpty(Player player) {
+        return isInventoryContentEmpty(player.getEnderChest().getContents());
+    }
+
+    public boolean hasPlayerEmptyInventory(Player player) {
+        return isPlayerInventoryEmpty(player) || isPlayerEnderChestEmpty(player);
     }
 }

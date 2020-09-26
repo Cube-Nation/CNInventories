@@ -120,6 +120,15 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        World world = player.getWorld();
+        GameMode mode = player.getGameMode();
+
+        String worldGroup = groupService.getWorldGroup(world, mode);
+
+        // safe apply inventory in case of an empty inventory after joining
+        if(invService.hasPlayerEmptyInventory(player))
+            invService.safeApply(player, worldGroup);
+
         // check for inventory zones
         handlePlayerChangeLocation(player);
     }

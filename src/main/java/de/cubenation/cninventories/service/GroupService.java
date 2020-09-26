@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class GroupService extends AbstractService {
 
@@ -34,6 +35,11 @@ public class GroupService extends AbstractService {
 
     @Override
     public void reload() {
+        plugin.log(
+                Level.FINE,
+                "Reloading groups..."
+        );
+
         // save old Inventories
         CNInventoriesPlugin.getInstance().getInventoryStoreService().saveAll(true);
 
@@ -45,6 +51,11 @@ public class GroupService extends AbstractService {
         // apply groups
         // deactivated -> may result in inventory loss...
         //CNInventoriesPlugin.getInstance().getInventoryStoreService().applyAll();
+
+        plugin.log(
+                Level.FINE,
+                "Reloading groups done!"
+        );
     }
 
 
