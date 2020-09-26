@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
         InventoryOpenEnderChestCommand.class,
         InventoryConfirmCommand.class,
         InventoryCancelCommand.class,
+        CNInventoriesConvertCommand.class
 })
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)

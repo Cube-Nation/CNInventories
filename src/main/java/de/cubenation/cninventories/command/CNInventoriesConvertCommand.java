@@ -51,8 +51,8 @@ public class CNInventoriesConvertCommand extends Command {
                         @Override
                         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                             String relative = fileGroupsXi.toURI().relativize(dir.toUri()).getPath();
-                            if(!relative.equals("") && !relative.startsWith("default/") && !relative.startsWith("museum/"))
-                                return FileVisitResult.SKIP_SUBTREE;
+                            //if(!relative.equals("") && !relative.startsWith("default/") && !relative.startsWith("museum/"))
+                            //    return FileVisitResult.SKIP_SUBTREE;
                             plugin.getLogger().info("Converting "+relative+"...");
                             new File(fileGroupsCi, relative).mkdirs();
                             return FileVisitResult.CONTINUE;
