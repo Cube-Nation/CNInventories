@@ -10,6 +10,10 @@ public class Messages extends MessageHelper {
 
     public static CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
 
+    public static void DebugModeSetSuccess(CommandSender sender, boolean mode) {
+        new JsonMessage(plugin, "cninventories.debugmode.set.success", "mode", String.valueOf(mode)).send(sender);
+    }
+
     public static void InvZoneSetSuccess(CommandSender sender) {
         new JsonMessage(plugin, "inventory.zone.set.success").send(sender);
     }

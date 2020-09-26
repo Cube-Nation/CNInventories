@@ -23,6 +23,9 @@ public class de_DE extends CustomConfigurationFile {
      * Commands
      */
 
+    @Path("command.cninventories.debug.desc")
+    private String commandDebugModeDesc = "Ändert den Debug-Mode.";
+
     @Path("command.inventory.zone.set.desc")
     private String commandInvzoneSetDesc = "Setzt eine Inventar-Zone.";
 
@@ -50,6 +53,10 @@ public class de_DE extends CustomConfigurationFile {
     /**
      * Command Messages
      */
+
+    @Comment("Args: %mode%")
+    @Path("cninventories.debugmode.set.success")
+    private String cninventoriesDebugmodeSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Der Debug Mode wurde zu '%mode%' geändert!\",\"color\":\"&SECONDARY&\"}]}";
 
     @Path("inventory.zone.set.success")
     private String inventoryZoneSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";

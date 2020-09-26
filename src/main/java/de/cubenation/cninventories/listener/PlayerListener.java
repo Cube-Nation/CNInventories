@@ -2,6 +2,7 @@ package de.cubenation.cninventories.listener;
 
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.helper.PlayerStatHelper;
+import de.cubenation.cninventories.manager.DebugManager;
 import de.cubenation.cninventories.model.InventoryZone;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
@@ -25,6 +26,8 @@ public class PlayerListener implements Listener {
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
+        DebugManager.getInstance().log("<Event> PlayerChangedWorldEvent for "+player.getDisplayName());
+
         World from = event.getFrom();
         World world = player.getWorld();
         GameMode mode = player.getGameMode();
@@ -35,10 +38,12 @@ public class PlayerListener implements Listener {
         if(prevZone == null) {
             // save current inventory to world group
             prevGroup = plugin.getGroupService().getWorldGroup(from, mode);
+            DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
             invService.save(player, prevGroup);
         } else {
             // save current inventory to zone group
             prevGroup = prevZone.getGroup();
+            DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
             invService.save(player, prevGroup);
             zoneService.removePlayerFromInvZone(player);
         }
@@ -49,6 +54,7 @@ public class PlayerListener implements Listener {
             return; // same group -> no need to reapply inv
 
         // apply new world group
+        DebugManager.getInstance().log("<Apply> group '"+newGroup+"' for "+player.getDisplayName());
         if(!invService.apply(player, newGroup)) {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
@@ -62,12 +68,15 @@ public class PlayerListener implements Listener {
     public void onPlayerGamemodeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
 
+        DebugManager.getInstance().log("<Event> PlayerGameModeChangeEvent for "+player.getDisplayName());
+
         World world = player.getWorld();
         GameMode from = player.getGameMode();
         GameMode mode = event.getNewGameMode();
 
         // always save the current inventory
         String prevGroup = groupService.getCurrentGroupForPlayerManual(player, world, from);
+        DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
         invService.save(player, prevGroup);
 
         if(zoneService.getZoneForPlayer(player) != null)
@@ -79,6 +88,7 @@ public class PlayerListener implements Listener {
             return; // same group -> no need to reapply inv
 
         // apply new world group
+        DebugManager.getInstance().log("<Apply> group '"+newGroup+"' for "+player.getDisplayName());
         if(!invService.apply(player, newGroup)) {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
@@ -89,6 +99,8 @@ public class PlayerListener implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
+        DebugManager.getInstance().log("<Event> PlayerQuitEvent for "+player.getDisplayName());
+
         World world = player.getWorld();
         GameMode mode = player.getGameMode();
 
@@ -96,11 +108,13 @@ public class PlayerListener implements Listener {
         if(prevZone == null) {
             // save current inventory to world group
             String prevGroup = plugin.getGroupService().getWorldGroup(world, mode);
+            DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
             invService.save(player, prevGroup);
             return;
         }
 
         String prevGroup = prevZone.getGroup();
+        DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
         invService.save(player, prevGroup);
         zoneService.removePlayerFromInvZone(player);
 
@@ -110,6 +124,7 @@ public class PlayerListener implements Listener {
             return; // same group -> no need to reapply inv
 
         // apply world group
+        DebugManager.getInstance().log("<Apply> group '"+worldGroup+"' for "+player.getDisplayName());
         if(!invService.apply(player, worldGroup)) {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
@@ -120,14 +135,18 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        DebugManager.getInstance().log("<Event> PlayerJoinEvent for "+player.getDisplayName());
+
         World world = player.getWorld();
         GameMode mode = player.getGameMode();
 
         String worldGroup = groupService.getWorldGroup(world, mode);
 
         // safe apply inventory in case of an empty inventory after joining
-        if(invService.hasPlayerEmptyInventory(player))
+        if(invService.hasPlayerEmptyInventory(player)) {
+            DebugManager.getInstance().log("<Apply> group '"+worldGroup+"' for "+player.getDisplayName());
             invService.safeApply(player, worldGroup);
+        }
 
         // check for inventory zones
         handlePlayerChangeLocation(player);
@@ -137,6 +156,8 @@ public class PlayerListener implements Listener {
     public void onPlayerMoveEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
+        //DebugManager.getInstance().log("<Event> PlayerMoveEvent for "+player.getDisplayName());
+
         // check for inventory zones
         handlePlayerChangeLocation(player);
     }
@@ -144,6 +165,8 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
+
+        DebugManager.getInstance().log("<Event> PlayerTeleportEvent for "+player.getDisplayName());
 
         // check for inventory zones
         handlePlayerChangeLocation(player);
@@ -160,8 +183,10 @@ public class PlayerListener implements Listener {
                 if(!prevZone.getGroup().equals(newZone.getGroup())) {
                     // inv-group changed -> load new inv-group
                     // save prev zone inv
+                    DebugManager.getInstance().log("<Save> group '"+prevZone.getGroup()+"' for "+player.getDisplayName());
                     invService.save(player, prevZone.getGroup());
                     // load new zone inv
+                    DebugManager.getInstance().log("<Apply> group '"+newZone.getGroup()+"' for "+player.getDisplayName());
                     invService.apply(player, newZone.getGroup());
                 }
 
@@ -171,9 +196,11 @@ public class PlayerListener implements Listener {
                 // > player left zone >
                 zoneService.removePlayerFromInvZone(player);
                 // save prev zone inv
+                DebugManager.getInstance().log("<Save> group '"+prevZone.getGroup()+"' for "+player.getDisplayName());
                 invService.save(player, prevZone.getGroup());
                 // load world inv
                 String prevGroup = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(player.getWorld(), player.getGameMode());
+                DebugManager.getInstance().log("<Apply> group '"+prevGroup+"' for "+player.getDisplayName());
                 invService.apply(player, prevGroup);
             }
         } else if(newZone != null) {
@@ -182,8 +209,10 @@ public class PlayerListener implements Listener {
 
             // save world inv
             String prevGroup = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(player.getWorld(), player.getGameMode());
+            DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
             invService.save(player, prevGroup);
             // load new zone inv
+            DebugManager.getInstance().log("<Apply> group '"+newZone.getGroup()+"' for "+player.getDisplayName());
             invService.apply(player, newZone.getGroup());
         }
     }
