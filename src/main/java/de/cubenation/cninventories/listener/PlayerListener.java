@@ -74,18 +74,17 @@ public class PlayerListener implements Listener {
         GameMode from = player.getGameMode();
         GameMode mode = event.getNewGameMode();
 
-        // always save the current inventory
-        String prevGroup = groupService.getCurrentGroupForPlayerManual(player, world, from);
-        DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
-        invService.save(player, prevGroup);
-
         if(zoneService.getZoneForPlayer(player) != null)
             return; // player is registered in zone ignoring gamemode changes
 
-        // load new world group
+        String prevGroup = groupService.getCurrentGroupForPlayerManual(player, world, from);
         String newGroup = groupService.getWorldGroup(world, mode);
         if(prevGroup.equals(newGroup))
             return; // same group -> no need to reapply inv
+
+        // save the current inventory
+        DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
+        invService.save(player, prevGroup);
 
         // apply new world group
         DebugManager.getInstance().log("<Apply> group '"+newGroup+"' for "+player.getDisplayName());
@@ -137,16 +136,16 @@ public class PlayerListener implements Listener {
 
         DebugManager.getInstance().log("<Event> PlayerJoinEvent for "+player.getDisplayName());
 
-        World world = player.getWorld();
-        GameMode mode = player.getGameMode();
-
-        String worldGroup = groupService.getWorldGroup(world, mode);
-
-        // safe apply inventory in case of an empty inventory after joining
-        if(invService.hasPlayerEmptyInventory(player)) {
-            DebugManager.getInstance().log("<Apply> group '"+worldGroup+"' for "+player.getDisplayName());
-            invService.safeApply(player, worldGroup);
-        }
+//        World world = player.getWorld();
+//        GameMode mode = player.getGameMode();
+//
+//        String worldGroup = groupService.getWorldGroup(world, mode);
+//
+//        // safe apply inventory in case of an empty inventory after joining
+//        if(invService.hasPlayerEmptyInventory(player)) {
+//            DebugManager.getInstance().log("<Apply> group '"+worldGroup+"' for "+player.getDisplayName());
+//            invService.safeApply(player, worldGroup);
+//        }
 
         // check for inventory zones
         handlePlayerChangeLocation(player);
