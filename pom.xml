@@ -6,7 +6,7 @@
 
     <groupId>de.cubenation</groupId>
     <artifactId>CNInventories</artifactId>
-    <version>1.3.2-RELEASE</version>
+    <version>2.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,12 +33,6 @@
             <url>https://nexus.lichtspiele.org/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <scm>
-        <connection>scm:git:ssh://git@bitbucket.org/cncampfiretools/cninventories.git</connection>
-        <url>http://bitbucket.org/cubenation/cninventories</url>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/cubenation/cninventories.git</developerConnection>
-    </scm>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
@@ -100,16 +94,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.cubenation.api</groupId>
-            <artifactId>Bedrock</artifactId>
-            <version>1.15.2-SNAPSHOT</version>
+            <groupId>de.cubenation.bedrock</groupId>
+            <artifactId>BedrockBukkit</artifactId>
+            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

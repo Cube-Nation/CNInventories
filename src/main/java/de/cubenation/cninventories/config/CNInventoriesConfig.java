@@ -1,7 +1,7 @@
 package de.cubenation.cninventories.config;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.service.config.CustomConfigurationFile;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.config.CustomConfigurationFile;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Path;
 
@@ -13,11 +13,11 @@ public class CNInventoriesConfig extends CustomConfigurationFile {
         return "config.yml";
     }
 
-    public CNInventoriesConfig(BasePlugin plugin) {
+    public CNInventoriesConfig(FoundationPlugin plugin) {
         this(plugin, getFilename());
     }
 
-    public CNInventoriesConfig(BasePlugin plugin, String filename) {
+    public CNInventoriesConfig(FoundationPlugin plugin, String filename) {
         CONFIG_FILE = new File(plugin.getDataFolder(), filename);
     }
 

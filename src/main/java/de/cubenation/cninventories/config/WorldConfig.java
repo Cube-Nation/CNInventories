@@ -1,7 +1,7 @@
 package de.cubenation.cninventories.config;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.service.config.CustomConfigurationFile;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.config.CustomConfigurationFile;
 import net.cubespace.Yamler.Config.Path;
 import org.bukkit.GameMode;
 
@@ -14,11 +14,11 @@ public class WorldConfig extends CustomConfigurationFile {
         return "worlds.yml";
     }
 
-    public WorldConfig(BasePlugin plugin) {
+    public WorldConfig(FoundationPlugin plugin) {
         this(plugin, getFilename());
     }
 
-    public WorldConfig(BasePlugin plugin, String filename) {
+    public WorldConfig(FoundationPlugin plugin, String filename) {
         CONFIG_FILE = new File(plugin.getDataFolder(), filename);
     }
 

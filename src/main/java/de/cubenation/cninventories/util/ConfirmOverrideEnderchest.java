@@ -1,9 +1,11 @@
 package de.cubenation.cninventories.util;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.exception.TimeoutException;
-import de.cubenation.api.bedrock.service.confirm.AbstractConfirmService;
-import de.cubenation.api.bedrock.service.confirm.ConfirmRegistry;
+import de.cubenation.bedrock.bukkit.api.BasePlugin;
+import de.cubenation.bedrock.bukkit.api.service.confirm.AbstractConfirmService;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.exception.TimeoutException;
+import de.cubenation.bedrock.core.model.wrapper.BedrockChatSender;
+import de.cubenation.bedrock.core.service.confirm.ConfirmRegistry;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.message.Messages;
 import org.bukkit.command.CommandSender;
@@ -30,7 +32,7 @@ public class ConfirmOverrideEnderchest extends AbstractConfirmService {
             return;
         }
 
-        CommandSender sender = (CommandSender) this.get("sender").get();
+        BedrockChatSender sender = (BedrockChatSender) this.get("sender").get();
         UUID target = (UUID) this.get("target").get();
         String group = (String) this.get("group").get();
         ItemStack[] contents = (ItemStack[]) this.get("contents").get();
@@ -44,7 +46,7 @@ public class ConfirmOverrideEnderchest extends AbstractConfirmService {
 
     @Override
     public void abort() {
-        CommandSender sender = (CommandSender) this.get("sender").get();
+        BedrockChatSender sender = (BedrockChatSender) this.get("sender").get();
         ConfirmRegistry.getInstance().remove(sender);
         Messages.Confirm.Timeout(sender);
     }

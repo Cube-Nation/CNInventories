@@ -1,11 +1,10 @@
 package de.cubenation.cninventories.service;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.exception.ServiceInitException;
-import de.cubenation.api.bedrock.service.AbstractService;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.exception.ServiceInitException;
+import de.cubenation.bedrock.core.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.config.WorldConfig;
-import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -21,7 +20,7 @@ public class GroupService extends AbstractService {
 
     private Map<String, Map<String, String>> groups = new HashMap<>();
 
-    public GroupService(BasePlugin plugin) {
+    public GroupService(FoundationPlugin plugin) {
         super(plugin);
     }
 
@@ -79,8 +78,7 @@ public class GroupService extends AbstractService {
     }
 
     public String getCurrentGroupForPlayerManual(Player player, World world, GameMode mode) {
-        InventoryZone zone = plugin.getInventoryZoneService().getZoneForPlayer(player);
-        return zone != null ? zone.getGroup() : getWorldGroup(world, mode);
+        return getWorldGroup(world, mode);
     }
 
     public String getCurrentGroupForPlayer(Player player) {

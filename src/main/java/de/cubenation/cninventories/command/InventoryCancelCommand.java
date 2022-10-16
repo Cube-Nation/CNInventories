@@ -1,28 +1,25 @@
 package de.cubenation.cninventories.command;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.annotation.Description;
-import de.cubenation.api.bedrock.annotation.Permission;
-import de.cubenation.api.bedrock.annotation.SubCommand;
-import de.cubenation.api.bedrock.command.Command;
-import de.cubenation.api.bedrock.command.CommandRole;
-import de.cubenation.api.bedrock.service.command.CommandManager;
-import de.cubenation.api.bedrock.service.confirm.ConfirmInterface;
-import de.cubenation.api.bedrock.service.confirm.ConfirmRegistry;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.annotation.Description;
+import de.cubenation.bedrock.core.annotation.Permission;
+import de.cubenation.bedrock.core.authorization.Role;
+import de.cubenation.bedrock.core.command.Command;
+import de.cubenation.bedrock.core.model.wrapper.BedrockChatSender;
+import de.cubenation.bedrock.core.service.confirm.ConfirmInterface;
+import de.cubenation.bedrock.core.service.confirm.ConfirmRegistry;
 import de.cubenation.cninventories.message.Messages;
 import org.bukkit.command.CommandSender;
 
 @Description("command.inventory.cancel.desc")
-@SubCommand("cancel")
-@Permission(Name = "inventory.cancel", Role = CommandRole.USER)
+@Permission(Name = "inventory.cancel", Role = Role.USER)
 public class InventoryCancelCommand extends Command {
 
-    public InventoryCancelCommand(BasePlugin plugin, CommandManager commandManager) {
-        super(plugin, commandManager);
+    public InventoryCancelCommand(FoundationPlugin plugin) {
+        super(plugin);
     }
 
-
-    public void execute(CommandSender commandSender, String[] args) {
+    public void execute(BedrockChatSender commandSender) {
         ConfirmInterface ci = ConfirmRegistry.getInstance().get(commandSender);
 
         if (ci == null) {

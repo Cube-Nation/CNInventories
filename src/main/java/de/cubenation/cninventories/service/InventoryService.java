@@ -1,9 +1,9 @@
 package de.cubenation.cninventories.service;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.exception.ServiceInitException;
-import de.cubenation.api.bedrock.exception.ServiceReloadException;
-import de.cubenation.api.bedrock.service.AbstractService;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.exception.ServiceInitException;
+import de.cubenation.bedrock.core.exception.ServiceReloadException;
+import de.cubenation.bedrock.core.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.util.ItemStackUtil;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public class InventoryService extends AbstractService {
 
     private File groupsDirectory;
 
-    public InventoryService(BasePlugin plugin) {
+    public InventoryService(FoundationPlugin plugin) {
         super(plugin);
         this.groupsDirectory = new File(plugin.getDataFolder() + File.separator + "groups");
     }

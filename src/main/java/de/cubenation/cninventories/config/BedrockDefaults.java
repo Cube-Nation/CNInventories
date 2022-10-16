@@ -1,15 +1,15 @@
 package de.cubenation.cninventories.config;
 
-import de.cubenation.api.bedrock.BasePlugin;
+import de.cubenation.bedrock.bukkit.api.BasePlugin;
 import net.md_5.bungee.api.ChatColor;
 
 import java.io.File;
 
 @SuppressWarnings("unused")
-public class BedrockDefaults extends de.cubenation.api.bedrock.config.BedrockDefaults {
+public class BedrockDefaults extends de.cubenation.bedrock.core.config.BedrockDefaults {
 
     public BedrockDefaults(BasePlugin plugin) {
-        CONFIG_FILE = new File(plugin.getDataFolder(), de.cubenation.api.bedrock.config.BedrockDefaults.getFilename());
+        CONFIG_FILE = new File(plugin.getDataFolder(), de.cubenation.bedrock.core.config.BedrockDefaults.getFilename());
         CONFIG_HEADER = getHeader();
 
         this.setLocalizationLocale("de_DE");

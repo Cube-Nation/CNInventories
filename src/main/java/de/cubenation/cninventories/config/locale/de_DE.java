@@ -1,7 +1,7 @@
 package de.cubenation.cninventories.config.locale;
 
-import de.cubenation.api.bedrock.BasePlugin;
-import de.cubenation.api.bedrock.service.config.CustomConfigurationFile;
+import de.cubenation.bedrock.core.FoundationPlugin;
+import de.cubenation.bedrock.core.config.CustomConfigurationFile;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Path;
 
@@ -15,7 +15,7 @@ public class de_DE extends CustomConfigurationFile {
         return "locale" + System.getProperty("file.separator") + "de_DE.yml";
     }
 
-    public de_DE(BasePlugin plugin) {
+    public de_DE(FoundationPlugin plugin) {
         CONFIG_FILE = new File(plugin.getDataFolder(), getFilename());
     }
 
