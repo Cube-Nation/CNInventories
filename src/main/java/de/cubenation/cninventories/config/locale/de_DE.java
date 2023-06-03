@@ -1,14 +1,14 @@
 package de.cubenation.cninventories.config.locale;
 
-import de.cubenation.bedrock.core.FoundationPlugin;
-import de.cubenation.bedrock.core.config.CustomConfigurationFile;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.config.CustomConfigFile;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Path;
 
 import java.io.File;
 import java.util.HashMap;
 
-public class de_DE extends CustomConfigurationFile {
+public class de_DE extends CustomConfigFile {
 
     @SuppressWarnings("WeakerAccess")
     public static String getFilename() {
@@ -16,7 +16,7 @@ public class de_DE extends CustomConfigurationFile {
     }
 
     public de_DE(FoundationPlugin plugin) {
-        CONFIG_FILE = new File(plugin.getDataFolder(), getFilename());
+        CONFIG_FILE = new File(plugin.getPluginFolder(), getFilename());
     }
 
     /**

@@ -1,11 +1,11 @@
 package de.cubenation.cninventories.service;
 
-import de.cubenation.bedrock.core.FoundationPlugin;
-import de.cubenation.bedrock.core.exception.ServiceInitException;
-import de.cubenation.bedrock.core.exception.ServiceReloadException;
-import de.cubenation.bedrock.core.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.util.ItemStackUtil;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.annotations.Inject;
+import dev.projectshard.core.exceptions.InitializationException;
+import dev.projectshard.core.lifecycle.Initializable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,71 +20,46 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class InventoryService extends AbstractService {
+public class InventoryService implements Initializable {
 
-    private File groupsDirectory;
+    private final FoundationPlugin plugin;
+
+    @Inject
+    private GroupService groupService;
+
+    private final File groupsDirectory;
 
     public InventoryService(FoundationPlugin plugin) {
-        super(plugin);
-        this.groupsDirectory = new File(plugin.getDataFolder() + File.separator + "groups");
+        this.plugin = plugin;
+        // TODO: Switch to NIO
+        this.groupsDirectory = new File(plugin.getPluginFolder() + File.separator + "groups");
     }
 
     @Override
-    public void init() throws ServiceInitException {
+    public void init() throws InitializationException {
         try {
-            this.createDataFolder(this.groupsDirectory);
-        } catch (Exception e) {
-            throw new ServiceInitException(e.getMessage());
+            createDataFolder(groupsDirectory);
+        } catch (IOException e) {
+            throw new InitializationException(e);
         }
     }
 
-    @Override
-    public void reload() throws ServiceReloadException {
-
+    private void createDataFolder(File dir) throws IOException {
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IOException("Could not create folder " + dir.getName());
+        }
     }
 
-    private void createDataFolder(File dir) throws Exception {
-        if (!dir.exists() && !dir.mkdirs())
-            throw new Exception("Could not create folder " + dir.getName());
-    }
-
-    public boolean storePlayerInventoryContents(UUID uuid, String group, ItemStack[] contents) {
+    public boolean storeInventoryContents(UUID uuid, String group, String type, ItemStack[] contents) {
         File groupDir = new File(this.groupsDirectory, group);
         try {
             createDataFolder(groupDir);
-        } catch (Exception e) {
-            return false;
-        }
-
-        File f = new File(groupDir, uuid.toString() + ".yml");
-        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-
-        c.set("inventory", ItemStackUtil.convertArrayToMap(contents));
-
-        try {
+            File f = new File(groupDir, uuid.toString() + ".yml");
+            FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+            c.set(type, ItemStackUtil.convertArrayToMap(contents));
             c.save(f);
         } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean storeEnderchestContents(UUID uuid, String group, ItemStack[] contents) {
-        File groupDir = new File(this.groupsDirectory, group);
-        try {
-            createDataFolder(groupDir);
-        } catch (Exception e) {
-            return false;
-        }
-
-        File f = new File(groupDir, uuid.toString() + ".yml");
-        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-
-        c.set("ender-chest", ItemStackUtil.convertArrayToMap(contents));
-
-        try {
-            c.save(f);
-        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -95,8 +70,9 @@ public class InventoryService extends AbstractService {
     }
 
     public boolean save(Player player, String group, boolean closeInv) {
-        if(closeInv)
+        if (closeInv) {
             player.closeInventory();
+        }
 
         File groupDir = new File(this.groupsDirectory, group);
         try {
@@ -110,7 +86,7 @@ public class InventoryService extends AbstractService {
             return false;
         }
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, player.getUniqueId() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         // inventory
@@ -132,6 +108,7 @@ public class InventoryService extends AbstractService {
         c.set("exhaustion", player.getExhaustion());
 
         PotionEffect[] effects = player.getActivePotionEffects().toArray(new PotionEffect[player.getActivePotionEffects().size()]);
+        // TODO: Is it even saving effects?
         c.set("potion-effects", effects);
 
         try {
@@ -148,9 +125,8 @@ public class InventoryService extends AbstractService {
     }
 
     public void saveAll(boolean closeInv) {
-        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-        for(Player p : onlinePlayers) {
-            String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            String group = groupService.getWorldGroup(p.getWorld(), p.getGameMode());
             save(p, group, closeInv);
         }
     }
@@ -161,8 +137,9 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
-        if(c.getConfigurationSection("inventory") == null)
+        if (c.getConfigurationSection("inventory") == null) {
             throw new IOException("Inventory is not existent.");
+        }
         return ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), size);
     }
 
@@ -172,8 +149,9 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
-        if(c.getConfigurationSection("ender-chest") == null)
+        if (c.getConfigurationSection("ender-chest") == null) {
             throw new IOException("Inventory is not existent.");
+        }
         return ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), size);
     }
 
@@ -190,17 +168,14 @@ public class InventoryService extends AbstractService {
         try {
 
             // populate player inventory
-            if(c.getConfigurationSection("inventory") != null) {
+            if (c.getConfigurationSection("inventory") != null) {
                 ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
                 player.getInventory().setContents(invContent);
             }
 
             // populate ender chest
-            if(c.getConfigurationSection("ender-chest") != null) {
+            if (c.getConfigurationSection("ender-chest") != null) {
                 ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
-
-
-
                 player.getEnderChest().setContents(enderChestContent);
             }
 
@@ -213,45 +188,7 @@ public class InventoryService extends AbstractService {
             return false;
         }
 
-        if(c.get("health") != null)
-            player.setHealth(c.getDouble("health"));
-        else
-            player.setHealth(20.0);
-
-        if(c.get("hunger") != null)
-            player.setFoodLevel(c.getInt("hunger"));
-        else
-            player.setFoodLevel(20);
-
-        if(c.get("exp") != null)
-            player.setExp(Float.parseFloat(c.getString("exp")));
-
-        if(c.get("exp-level") != null)
-            player.setLevel(c.getInt("exp-level"));
-
-        if(c.get("remaining-air") != null)
-            player.setRemainingAir(c.getInt("remaining-air"));
-        else
-            player.setRemainingAir(300);
-
-        if(c.get("fire-ticks") != null)
-            player.setFireTicks(c.getInt("fire-ticks"));
-        else
-            player.setFireTicks(-20);
-
-        if(c.get("saturation") != null)
-            player.setSaturation(c.getInt("saturation"));
-
-        if(c.get("exhaustion") != null)
-            player.setExhaustion(c.getInt("exhaustion"));
-
-
-        // clear current effects
-        for(PotionEffect effect : player.getActivePotionEffects())
-            player.removePotionEffect(effect.getType());
-        // apply saved effects
-        if(c.get("potion-effects") != null)
-            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
+        applyPlayerStats(player, c);
 
         return true;
     }
@@ -308,60 +245,55 @@ public class InventoryService extends AbstractService {
             return false;
         }
 
-        if(c.get("health") != null)
-            player.setHealth(c.getDouble("health"));
-        else
-            player.setHealth(20.0);
-
-        if(c.get("hunger") != null)
-            player.setFoodLevel(c.getInt("hunger"));
-        else
-            player.setFoodLevel(20);
-
-        if(c.get("exp") != null)
-            player.setExp(Float.parseFloat(c.getString("exp")));
-
-        if(c.get("exp-level") != null)
-            player.setLevel(c.getInt("exp-level"));
-
-        if(c.get("remaining-air") != null)
-            player.setRemainingAir(c.getInt("remaining-air"));
-        else
-            player.setRemainingAir(300);
-
-        if(c.get("fire-ticks") != null)
-            player.setFireTicks(c.getInt("fire-ticks"));
-        else
-            player.setFireTicks(-20);
-
-        if(c.get("saturation") != null)
-            player.setSaturation(c.getInt("saturation"));
-
-        if(c.get("exhaustion") != null)
-            player.setExhaustion(c.getInt("exhaustion"));
-
-
-        // clear current effects
-        for(PotionEffect effect : player.getActivePotionEffects())
-            player.removePotionEffect(effect.getType());
-        // apply saved effects
-        if(c.get("potion-effects") != null)
-            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
+        applyPlayerStats(player, c);
 
         return true;
     }
 
+    private void applyPlayerStats(Player player, FileConfiguration c) {
+        player.setHealth(c.get("health") != null ? c.getDouble("health") : 20.0);
+        player.setFoodLevel(c.get("hunger") != null ? c.getInt("hunger") : 20);
+        player.setRemainingAir(c.get("remaining-air") != null ? c.getInt("remaining-air") : 300);
+        player.setFireTicks(c.get("fire-ticks") != null ? c.getInt("fire-ticks") : -20);
+
+        if (c.get("exp") != null) {
+            player.setExp(Float.parseFloat(c.getString("exp")));
+        }
+
+        if(c.get("exp-level") != null) {
+            player.setLevel(c.getInt("exp-level"));
+        }
+
+        if(c.get("saturation") != null) {
+            player.setSaturation(c.getInt("saturation"));
+        }
+
+        if(c.get("exhaustion") != null) {
+            player.setExhaustion(c.getInt("exhaustion"));
+        }
+
+        // clear current effects
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+        // apply saved effects
+        if (c.get("potion-effects") != null) {
+            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
+        }
+    }
+
     public void applyAll() {
-        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-        for(Player p : onlinePlayers) {
-            String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            String group = groupService.getWorldGroup(p.getWorld(), p.getGameMode());
             apply(p, group);
         }
     }
 
     private boolean isInventoryContentEmpty(ItemStack[] items) {
-        for(ItemStack itemStack : items) {
-            if (itemStack != null) return false;
+        for (ItemStack itemStack : items) {
+            if (itemStack != null) {
+                return false;
+            }
         }
         return true;
     }

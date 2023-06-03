@@ -1,15 +1,13 @@
 package de.cubenation.cninventories.command;
 
-import de.cubenation.bedrock.bukkit.api.BasePlugin;
-import de.cubenation.bedrock.core.FoundationPlugin;
-import de.cubenation.bedrock.core.annotation.Description;
-import de.cubenation.bedrock.core.annotation.Permission;
-import de.cubenation.bedrock.core.authorization.Role;
-import de.cubenation.bedrock.core.command.Command;
-import de.cubenation.bedrock.core.model.wrapper.BedrockChatSender;
 import de.cubenation.cninventories.manager.DebugManager;
 import de.cubenation.cninventories.message.Messages;
-import org.bukkit.command.CommandSender;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.annotations.Description;
+import dev.projectshard.core.annotations.Permission;
+import dev.projectshard.core.authorization.Role;
+import dev.projectshard.core.command.Command;
+import dev.projectshard.core.model.wrapper.ShardChatSender;
 
 @Description("command.cninventories.debug.desc")
 @Permission(Name = "inventory.debug", Role = Role.OWNER)
@@ -18,8 +16,8 @@ public class CNInventoriesDebugCommand extends Command {
         super(plugin);
     }
 
-    public void execute(BedrockChatSender commandSender) {
+    public void execute(ShardChatSender sender) {
         boolean debugModeEnabled = DebugManager.getInstance().toggleDebugMode();
-        Messages.DebugModeSetSuccess(commandSender, debugModeEnabled);
+        Messages.DebugModeSetSuccess(sender, debugModeEnabled);
     }
 }

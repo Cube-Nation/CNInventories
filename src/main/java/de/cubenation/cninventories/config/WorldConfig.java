@@ -1,14 +1,14 @@
 package de.cubenation.cninventories.config;
 
-import de.cubenation.bedrock.core.FoundationPlugin;
-import de.cubenation.bedrock.core.config.CustomConfigurationFile;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.config.CustomConfigFile;
 import net.cubespace.Yamler.Config.Path;
 import org.bukkit.GameMode;
 
 import java.io.File;
 import java.util.*;
 
-public class WorldConfig extends CustomConfigurationFile {
+public class WorldConfig extends CustomConfigFile {
 
     public static String getFilename() {
         return "worlds.yml";
@@ -19,7 +19,7 @@ public class WorldConfig extends CustomConfigurationFile {
     }
 
     public WorldConfig(FoundationPlugin plugin, String filename) {
-        CONFIG_FILE = new File(plugin.getDataFolder(), filename);
+        CONFIG_FILE = new File(plugin.getPluginFolder(), filename);
     }
 
     @Path("groups")
@@ -35,10 +35,14 @@ public class WorldConfig extends CustomConfigurationFile {
 
     public List<String> getGroups() {
         Set<String> res = new LinkedHashSet<>();
-        for(Map.Entry<String, Map<String, String>> entry : groups.entrySet())
+
+        for (Map.Entry<String, Map<String, String>> entry : groups.entrySet()) {
             res.addAll(entry.getValue().values());
-        for(GameMode mode : GameMode.values())
-            res.add("default/"+mode.name().toLowerCase());
+        }
+        for (GameMode mode : GameMode.values()) {
+            res.add("default/" + mode.name().toLowerCase());
+        }
+
         return new ArrayList<>(res);
     }
 

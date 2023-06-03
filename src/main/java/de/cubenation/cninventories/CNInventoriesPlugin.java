@@ -1,22 +1,23 @@
 package de.cubenation.cninventories;
 
-import de.cubenation.bedrock.bukkit.api.BasePlugin;
-import de.cubenation.bedrock.core.annotation.ConfigurationFile;
-import de.cubenation.bedrock.core.annotation.Service;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
 import de.cubenation.cninventories.config.WorldConfig;
 import de.cubenation.cninventories.config.locale.de_DE;
-import de.cubenation.cninventories.listener.InventoryListener;
 import de.cubenation.cninventories.listener.PlayerListener;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
+import dev.projectshard.core.RuntimeContext;
+import dev.projectshard.core.annotations.ConfigurationFile;
+import dev.projectshard.core.annotations.Inject;
+import dev.projectshard.core.annotations.ManagedInstance;
+import dev.projectshard.mc.bukkit.core.BasePlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)
 @ConfigurationFile(de_DE.class)
-@Service(GroupService.class)
-@Service(InventoryService.class)
+@ManagedInstance(GroupService.class)
+@ManagedInstance(InventoryService.class)
 public class CNInventoriesPlugin extends BasePlugin {
 
     private static CNInventoriesPlugin instance;
@@ -25,6 +26,12 @@ public class CNInventoriesPlugin extends BasePlugin {
         return instance;
     }
 
+    @Inject
+    private CNInventoriesConfig config;
+
+    @Inject
+    private InventoryService inventoryService;
+
     @Override
     public void onPreEnable() {
         instance = this;
@@ -32,30 +39,27 @@ public class CNInventoriesPlugin extends BasePlugin {
 
     @Override
     public void onPostEnable() {
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+//        getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
 
         scheduleTasks();
     }
 
+    @Override
+    public RuntimeContext getRuntimeContext() {
+        return null;
+    }
+
     private void scheduleTasks() {
         // Inventory Saver every 30min
-        CNInventoriesConfig config = (CNInventoriesConfig) this.getConfigService().getConfig(CNInventoriesConfig.class);
-        if(config.getAutosaveTime() > 0) {
+        if (config.getAutosaveTime() > 0) {
+            // TODO: Replace with Shard Executor
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getInventoryStoreService().saveAll(false);
+                    inventoryService.saveAll(false);
                 }
             }.runTaskTimer(this, 20 * 60 * config.getAutosaveTime(), 20 * 60 * config.getAutosaveTime());
         }
-    }
-
-    public GroupService getGroupService() {
-        return (GroupService) getServiceManager().getService(GroupService.class);
-    }
-
-    public InventoryService getInventoryStoreService() {
-        return (InventoryService) getServiceManager().getService(InventoryService.class);
     }
 }

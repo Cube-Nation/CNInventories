@@ -5,6 +5,9 @@ import de.cubenation.cninventories.helper.PlayerStatHelper;
 import de.cubenation.cninventories.manager.DebugManager;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.annotations.Inject;
+import dev.projectshard.core.lifecycle.Component;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -13,11 +16,17 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
-public class PlayerListener implements Listener {
+public class PlayerListener extends Component implements Listener {
 
-    private final CNInventoriesPlugin plugin = CNInventoriesPlugin.getInstance();
-    private final GroupService groupService = plugin.getGroupService();
-    private final InventoryService invService = plugin.getInventoryStoreService();
+    @Inject
+    private GroupService groupService;
+
+    @Inject
+    private InventoryService inventoryService;
+
+    public PlayerListener(FoundationPlugin plugin) {
+        super(plugin);
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
@@ -32,18 +41,18 @@ public class PlayerListener implements Listener {
         // always save the current inventory
         String prevGroup;
         // save current inventory to world group
-        prevGroup = plugin.getGroupService().getWorldGroup(from, mode);
+        prevGroup = groupService.getWorldGroup(from, mode);
         DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
-        invService.save(player, prevGroup);
+        inventoryService.save(player, prevGroup);
 
         // load new world group
-        String newGroup = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(world, mode);
-        if(prevGroup.equals(newGroup))
+        String newGroup = groupService.getWorldGroup(world, mode);
+        if (prevGroup.equals(newGroup))
             return; // same group -> no need to reapply inv
 
         // apply new world group
         DebugManager.getInstance().log("<Apply> group '"+newGroup+"' for "+player.getDisplayName());
-        if(!invService.apply(player, newGroup)) {
+        if (!inventoryService.apply(player, newGroup)) {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
         }
@@ -61,16 +70,16 @@ public class PlayerListener implements Listener {
 
         String prevGroup = groupService.getCurrentGroupForPlayerManual(player, world, from);
         String newGroup = groupService.getWorldGroup(world, mode);
-        if(prevGroup.equals(newGroup))
+        if (prevGroup.equals(newGroup))
             return; // same group -> no need to reapply inv
 
         // save the current inventory
         DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
-        invService.save(player, prevGroup);
+        inventoryService.save(player, prevGroup);
 
         // apply new world group
         DebugManager.getInstance().log("<Apply> group '"+newGroup+"' for "+player.getDisplayName());
-        if(!invService.apply(player, newGroup)) {
+        if (!inventoryService.apply(player, newGroup)) {
             player.getInventory().clear();
             PlayerStatHelper.resetPlayerStats(player);
         }
@@ -85,9 +94,9 @@ public class PlayerListener implements Listener {
         World world = player.getWorld();
         GameMode mode = player.getGameMode();
 
-        String prevGroup = plugin.getGroupService().getWorldGroup(world, mode);
+        String prevGroup = groupService.getWorldGroup(world, mode);
         DebugManager.getInstance().log("<Save> group '"+prevGroup+"' for "+player.getDisplayName());
-        invService.save(player, prevGroup);
+        inventoryService.save(player, prevGroup);
         return;
     }
 }

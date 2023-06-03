@@ -1,43 +1,45 @@
 package de.cubenation.cninventories.util;
 
-import de.cubenation.bedrock.bukkit.api.BasePlugin;
-import de.cubenation.bedrock.bukkit.api.service.confirm.AbstractConfirmService;
-import de.cubenation.bedrock.core.FoundationPlugin;
-import de.cubenation.bedrock.core.exception.TimeoutException;
-import de.cubenation.bedrock.core.model.wrapper.BedrockChatSender;
-import de.cubenation.bedrock.core.service.confirm.ConfirmRegistry;
-import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.message.Messages;
-import org.bukkit.command.CommandSender;
+import de.cubenation.cninventories.service.InventoryService;
+import dev.projectshard.core.FoundationPlugin;
+import dev.projectshard.core.confirm.AbstractConfirmService;
+import dev.projectshard.core.confirm.ConfirmRegistry;
+import dev.projectshard.core.exceptions.TimeoutException;
+import dev.projectshard.core.model.wrapper.ShardChatSender;
+import jakarta.inject.Inject;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 public class ConfirmOverrideEnderchest extends AbstractConfirmService {
 
-    public ConfirmOverrideEnderchest(BasePlugin plugin) {
+    @Inject
+    private InventoryService inventoryService;
+
+    public ConfirmOverrideEnderchest(FoundationPlugin plugin) {
         super(plugin);
     }
 
     @Override
     public void call() {
 
-        // cancel timeout info task
-        this.task.cancel();
+        // Cancel timeout info task
+        task.cancel();
 
-        // check timeout
+        // Check timeout
         try {
             this.checkExceeded();
         } catch (TimeoutException e) {
             return;
         }
 
-        BedrockChatSender sender = (BedrockChatSender) this.get("sender").get();
+        ShardChatSender sender = (ShardChatSender) this.get("sender").get();
         UUID target = (UUID) this.get("target").get();
         String group = (String) this.get("group").get();
         ItemStack[] contents = (ItemStack[]) this.get("contents").get();
 
-        boolean success = CNInventoriesPlugin.getInstance().getInventoryStoreService().storeEnderchestContents(target, group, contents);
+        boolean success = inventoryService.storeInventoryContents(target, group, "ender-chest", contents);
         if(success)
             Messages.InventoryContentUpdateSuccess(sender);
         else
@@ -46,7 +48,7 @@ public class ConfirmOverrideEnderchest extends AbstractConfirmService {
 
     @Override
     public void abort() {
-        BedrockChatSender sender = (BedrockChatSender) this.get("sender").get();
+        ShardChatSender sender = (ShardChatSender) this.get("sender").get();
         ConfirmRegistry.getInstance().remove(sender);
         Messages.Confirm.Timeout(sender);
     }

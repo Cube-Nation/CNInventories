@@ -6,7 +6,7 @@ version: "${project.version}"
 load: postworld
 api-version: 1.15
 depend:
-  - Bedrock
+  - Shard
   - WorldEdit
 database: false
 commands:
