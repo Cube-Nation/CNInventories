@@ -1,22 +1,16 @@
     package de.cubenation.cninventories.command;
 
-    import de.cubenation.cninventories.config.WorldConfig;
+    import de.cubenation.cninventories.command.autocomplete.InventoryGroupAutoCompleter;
     import dev.projectshard.core.FoundationPlugin;
     import dev.projectshard.core.annotations.*;
     import dev.projectshard.core.authorization.Role;
     import dev.projectshard.core.command.Command;
-    import dev.projectshard.core.model.wrapper.ShardChatSender;
     import dev.projectshard.core.model.wrapper.ShardPlayer;
-
-    import java.util.ArrayList;
 
     @Description("command.inventory.open.desc")
     @Permission(Name = "inventory.open", Role = Role.MODERATOR)
     @IngameCommand
     public class InventoryOpenCommand extends Command {
-
-        @Inject
-        private WorldConfig worldConfig;
 
         public InventoryOpenCommand(FoundationPlugin plugin) {
             super(plugin);
@@ -31,7 +25,8 @@
                 ShardPlayer target,
                 @Argument(
                         Description = "command.inventory.args.group.desc",
-                        Placeholder = "command.inventory.args.group.ph"
+                        Placeholder = "command.inventory.args.group.ph",
+                        AutoComplete = InventoryGroupAutoCompleter.class
                 )
                 String group
         ) {
@@ -42,9 +37,4 @@
 //             GroupViewerInventoryHolder holder = new GroupViewerInventoryHolder(player, target, group);
 //             player.openInventory(holder.getInventory());
 //        }
-
-        @Override
-        public Iterable<String> onAutoComplete(ShardChatSender sender, String[] args) {
-            return new ArrayList<>(worldConfig.getGroups());
-        }
     }
