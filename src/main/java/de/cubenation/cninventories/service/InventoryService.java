@@ -5,6 +5,7 @@ import de.cubenation.api.bedrock.exception.ServiceInitException;
 import de.cubenation.api.bedrock.exception.ServiceReloadException;
 import de.cubenation.api.bedrock.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
+import de.cubenation.cninventories.util.InventoryUtil;
 import de.cubenation.cninventories.util.ItemStackUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -59,7 +60,7 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
-        c.set("inventory", ItemStackUtil.convertArrayToMap(contents));
+        c.set("inventory", InventoryUtil.serializePlayerInventory(contents));
 
         try {
             c.save(f);
@@ -80,7 +81,7 @@ public class InventoryService extends AbstractService {
         File f = new File(groupDir, uuid.toString() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
-        c.set("ender-chest", ItemStackUtil.convertArrayToMap(contents));
+        c.set("ender-chest", InventoryUtil.serializeEnderchestInventory(contents));
 
         try {
             c.save(f);
@@ -114,12 +115,8 @@ public class InventoryService extends AbstractService {
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         // inventory
-        c.set("inventory", ItemStackUtil.convertArrayToMap(player.getInventory().getContents()));
-        c.set("ender-chest", ItemStackUtil.convertArrayToMap(player.getEnderChest().getContents()));
-        c.set("armor-contents.helmet", player.getInventory().getHelmet());
-        c.set("armor-contents.chestplate", player.getInventory().getChestplate());
-        c.set("armor-contents.leggins", player.getInventory().getLeggings());
-        c.set("armor-contents.boots", player.getInventory().getBoots());
+        c.set("inventory", InventoryUtil.serializePlayerInventory(player.getInventory().getContents()));
+        c.set("ender-chest", InventoryUtil.serializeEnderchestInventory(player.getEnderChest().getContents()));
 
         // player stats
         c.set("health", player.getHealth());
@@ -163,7 +160,7 @@ public class InventoryService extends AbstractService {
 
         if(c.getConfigurationSection("inventory") == null)
             throw new IOException("Inventory is not existent.");
-        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), size);
+        return InventoryUtil.deserializePlayerInventory(c.getConfigurationSection("inventory").getValues(false));
     }
 
     public ItemStack[] getEnderchestContents(UUID uuid, String group, int size) throws IOException {
@@ -174,43 +171,29 @@ public class InventoryService extends AbstractService {
 
         if(c.getConfigurationSection("ender-chest") == null)
             throw new IOException("Inventory is not existent.");
-        return ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), size);
+        return InventoryUtil.deserializeEnderchestInventory(c.getConfigurationSection("ender-chest").getValues(false));
     }
 
     public boolean apply(Player player, String group) {
         File groupDir = new File(this.groupsDirectory, group);
 
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
+        File f = new File(groupDir, player.getUniqueId() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         // clear current inventories
         player.getInventory().clear();
         player.getEnderChest().clear();
-        // apply saved inventories
-        try {
 
-            // populate player inventory
-            if(c.getConfigurationSection("inventory") != null) {
-                ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
-                player.getInventory().setContents(invContent);
-            }
+        // populate player inventory
+        if(c.getConfigurationSection("inventory") != null) {
+            ItemStack[] invContent = InventoryUtil.deserializePlayerInventory(c.getConfigurationSection("inventory").getValues(false));
+            player.getInventory().setContents(invContent);
+        }
 
-            // populate ender chest
-            if(c.getConfigurationSection("ender-chest") != null) {
-                ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
-
-
-
-                player.getEnderChest().setContents(enderChestContent);
-            }
-
-        } catch (IOException e) {
-            plugin.log(
-                    Level.SEVERE,
-                    "Inventory of player '"+player.getDisplayName()+"' could not be applied! " +
-                            "Well that sucks..."
-            );
-            return false;
+        // populate ender chest
+        if(c.getConfigurationSection("ender-chest") != null) {
+            ItemStack[] enderChestContent = InventoryUtil.deserializeEnderchestInventory(c.getConfigurationSection("ender-chest").getValues(false));
+            player.getEnderChest().setContents(enderChestContent);
         }
 
         if(c.get("health") != null)
@@ -254,127 +237,5 @@ public class InventoryService extends AbstractService {
             player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
 
         return true;
-    }
-
-    // Same as apply but with extensive logging in case of mismatch
-    public boolean safeApply(Player player, String group) {
-        File groupDir = new File(this.groupsDirectory, group);
-
-        File f = new File(groupDir, player.getUniqueId().toString() + ".yml");
-        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-
-        // clear current inventories
-        player.getInventory().clear();
-        player.getEnderChest().clear();
-        // apply saved inventories
-        try {
-
-            // populate player inventory
-            if(c.getConfigurationSection("inventory") != null) {
-                ItemStack[] invContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("inventory").getValues(false), player.getInventory().getSize());
-
-                if(!invContent.equals(player.getInventory().getContents())) {
-                    plugin.log(
-                            Level.WARNING,
-                            "Mismatch between '"+player.getDisplayName()+"'s inventory and the saved version! " +
-                                    "Reapplying saved version..."
-                    );
-                }
-
-                player.getInventory().setContents(invContent);
-            }
-
-            // populate ender chest
-            if(c.getConfigurationSection("ender-chest") != null) {
-                ItemStack[] enderChestContent = ItemStackUtil.convertMapToArray(c.getConfigurationSection("ender-chest").getValues(false), player.getEnderChest().getSize());
-
-                if(!enderChestContent.equals(player.getEnderChest().getContents())) {
-                    plugin.log(
-                            Level.WARNING,
-                            "Mismatch between '"+player.getDisplayName()+"'s ender chest and the saved version! " +
-                                    "Reapplying saved version..."
-                    );
-                }
-
-                player.getEnderChest().setContents(enderChestContent);
-            }
-
-        } catch (IOException e) {
-            plugin.log(
-                    Level.SEVERE,
-                    "Inventory of player '"+player.getDisplayName()+"' could not be applied! " +
-                            "Well that sucks..."
-            );
-            return false;
-        }
-
-        if(c.get("health") != null)
-            player.setHealth(c.getDouble("health"));
-        else
-            player.setHealth(20.0);
-
-        if(c.get("hunger") != null)
-            player.setFoodLevel(c.getInt("hunger"));
-        else
-            player.setFoodLevel(20);
-
-        if(c.get("exp") != null)
-            player.setExp(Float.parseFloat(c.getString("exp")));
-
-        if(c.get("exp-level") != null)
-            player.setLevel(c.getInt("exp-level"));
-
-        if(c.get("remaining-air") != null)
-            player.setRemainingAir(c.getInt("remaining-air"));
-        else
-            player.setRemainingAir(300);
-
-        if(c.get("fire-ticks") != null)
-            player.setFireTicks(c.getInt("fire-ticks"));
-        else
-            player.setFireTicks(-20);
-
-        if(c.get("saturation") != null)
-            player.setSaturation(c.getInt("saturation"));
-
-        if(c.get("exhaustion") != null)
-            player.setExhaustion(c.getInt("exhaustion"));
-
-
-        // clear current effects
-        for(PotionEffect effect : player.getActivePotionEffects())
-            player.removePotionEffect(effect.getType());
-        // apply saved effects
-        if(c.get("potion-effects") != null)
-            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
-
-        return true;
-    }
-
-    public void applyAll() {
-        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-        for(Player p : onlinePlayers) {
-            String group = CNInventoriesPlugin.getInstance().getGroupService().getWorldGroup(p.getWorld(), p.getGameMode());
-            apply(p, group);
-        }
-    }
-
-    private boolean isInventoryContentEmpty(ItemStack[] items) {
-        for(ItemStack itemStack : items) {
-            if (itemStack != null) return false;
-        }
-        return true;
-    }
-
-    private boolean isPlayerInventoryEmpty(Player player) {
-        return isInventoryContentEmpty(player.getInventory().getContents());
-    }
-
-    private boolean isPlayerEnderChestEmpty(Player player) {
-        return isInventoryContentEmpty(player.getEnderChest().getContents());
-    }
-
-    public boolean hasPlayerEmptyInventory(Player player) {
-        return isPlayerInventoryEmpty(player) || isPlayerEnderChestEmpty(player);
     }
 }

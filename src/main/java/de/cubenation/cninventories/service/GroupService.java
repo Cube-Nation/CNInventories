@@ -5,10 +5,8 @@ import de.cubenation.api.bedrock.exception.ServiceInitException;
 import de.cubenation.api.bedrock.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.config.WorldConfig;
-import de.cubenation.cninventories.model.InventoryZone;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,14 +74,5 @@ public class GroupService extends AbstractService {
 
     public boolean isKnownMode(World world, GameMode mode) {
         return this.groups.get(world.getName()).keySet().contains(mode.name().toLowerCase());
-    }
-
-    public String getCurrentGroupForPlayerManual(Player player, World world, GameMode mode) {
-        InventoryZone zone = plugin.getInventoryZoneService().getZoneForPlayer(player);
-        return zone != null ? zone.getGroup() : getWorldGroup(world, mode);
-    }
-
-    public String getCurrentGroupForPlayer(Player player) {
-        return getCurrentGroupForPlayerManual(player, player.getWorld(), player.getGameMode());
     }
 }

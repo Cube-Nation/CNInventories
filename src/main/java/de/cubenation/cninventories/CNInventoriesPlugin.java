@@ -6,23 +6,19 @@ import de.cubenation.api.bedrock.annotation.ConfigurationFile;
 import de.cubenation.api.bedrock.annotation.Service;
 import de.cubenation.cninventories.command.*;
 import de.cubenation.cninventories.config.CNInventoriesConfig;
-import de.cubenation.cninventories.config.InventoryZoneConfig;
 import de.cubenation.cninventories.config.WorldConfig;
 import de.cubenation.cninventories.config.locale.de_DE;
 import de.cubenation.cninventories.listener.InventoryListener;
 import de.cubenation.cninventories.listener.PlayerListener;
 import de.cubenation.cninventories.service.GroupService;
 import de.cubenation.cninventories.service.InventoryService;
-import de.cubenation.cninventories.service.InventoryZoneService;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @CommandHandler(Command = "cninventories", Handlers = {
         CNInventoriesDebugCommand.class,
+        CNInventoriesUpgradeCommand.class,
 })
 @CommandHandler(Command = "inventory", Handlers = {
-        InventoryZoneSetCommand.class,
-        InventoryZoneRemoveCommand.class,
-        InventoryZoneModifyGroupCommand.class,
         InventoryOpenCommand.class,
         InventoryOpenEnderChestCommand.class,
         InventoryConfirmCommand.class,
@@ -30,11 +26,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 })
 @ConfigurationFile(CNInventoriesConfig.class)
 @ConfigurationFile(WorldConfig.class)
-@ConfigurationFile(InventoryZoneConfig.class)
 @ConfigurationFile(de_DE.class)
 @Service(GroupService.class)
 @Service(InventoryService.class)
-@Service(InventoryZoneService.class)
 public class CNInventoriesPlugin extends BasePlugin {
 
     private static CNInventoriesPlugin instance;
@@ -75,9 +69,5 @@ public class CNInventoriesPlugin extends BasePlugin {
 
     public InventoryService getInventoryStoreService() {
         return (InventoryService) getServiceManager().getService(InventoryService.class);
-    }
-
-    public InventoryZoneService getInventoryZoneService() {
-        return (InventoryZoneService) getServiceManager().getService(InventoryZoneService.class);
     }
 }

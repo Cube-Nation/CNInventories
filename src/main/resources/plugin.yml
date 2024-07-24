@@ -7,7 +7,6 @@ load: postworld
 api-version: 1.15
 depend:
   - Bedrock
-  - WorldEdit
 database: false
 commands:
     inventory:

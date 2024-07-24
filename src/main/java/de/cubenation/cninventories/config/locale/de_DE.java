@@ -26,15 +26,6 @@ public class de_DE extends CustomConfigurationFile {
     @Path("command.cninventories.debug.desc")
     private String commandDebugModeDesc = "Ändert den Debug-Mode.";
 
-    @Path("command.inventory.zone.set.desc")
-    private String commandInvzoneSetDesc = "Setzt eine Inventar-Zone.";
-
-    @Path("command.inventory.zone.remove.desc")
-    private String commandInvzoneRemoveDesc = "Löscht eine Inventar-Zone in der du dich befindest.";
-
-    @Path("command.inventory.zone.modify.group.desc")
-    private String commandInvzoneModifyGroupDesc = "Ändert die Gruppe der Inventar-Zone in der du dich befindest.";
-
     @Path("command.inventory.open.desc")
     private String commandOpeninvgroupDesc = "Öffnet die Inventar-Gruppe eines Spielers.";
 
@@ -57,24 +48,6 @@ public class de_DE extends CustomConfigurationFile {
     @Comment("Args: %mode%")
     @Path("cninventories.debugmode.set.success")
     private String cninventoriesDebugmodeSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Der Debug Mode wurde zu '%mode%' geändert!\",\"color\":\"&SECONDARY&\"}]}";
-
-    @Path("inventory.zone.set.success")
-    private String inventoryZoneSetSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
-
-    @Path("inventory.zone.set.fail")
-    private String inventoryZoneSetFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht erstellt werden!\",\"color\":\"red\"}]}";
-
-    @Path("inventory.zone.remove.success")
-    private String inventoryZoneRemoveSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone wurde erfolgreich erstellt!\",\"color\":\"&SECONDARY&\"}]}";
-
-    @Path("inventory.zone.remove.fail")
-    private String inventoryZoneRemoveFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Zone konnte nicht gelöscht werden!\",\"color\":\"red\"}]}";
-
-    @Path("inventory.zone.modify.group.success")
-    private String inventoryZoneModifyGroupSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe wurde erfolgreich bearbeitet!\",\"color\":\"&SECONDARY&\"}]}";
-
-    @Path("inventory.zone.modify.group.fail")
-    private String inventoryZoneModifyGroupFail = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Die Inventar-Gruppe konnte nicht bearbeitet werden!\",\"color\":\"red\"}]}";
 
     @Path("inventory.content.update.success")
     private String inventoryContentUpdateSuccess = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Der Inventarinhalt wurde erfolgreich überschrieben!\",\"color\":\"&SECONDARY&\"}]}";
@@ -100,12 +73,6 @@ public class de_DE extends CustomConfigurationFile {
     /**
      * Error
      */
-
-    @Path("error.noweselection")
-    private String errorNoweselection = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Du musst zunächst eine viereckige WorldEdit Selektion machen.\",\"color\":\"red\"}]}";
-
-    @Path("error.noinvzone.location")
-    private String errorNoinvzoneLocation = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" Du musst dafür in einer Inventarzone stehen.\",\"color\":\"red\"}]}";
 
     @Path("error.nosuchinvgroup")
     private String errorNoSuchInvGroup = "{\"text\":\"%plugin_prefix%\",\"extra\":[{\"text\":\" '%group%' ist keine bekannte Inventar-Gruppe für den Spieler '%target%'.\",\"color\":\"red\"}]}";
