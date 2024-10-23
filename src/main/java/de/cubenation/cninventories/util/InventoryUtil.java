@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 public class InventoryUtil {
 
     public static Map<String, byte[]> serializePlayerInventory(final ItemStack[] inventoryContents) {
-        ItemStack[] hotbarContents = Arrays.copyOfRange(inventoryContents, 0, 8);
-        ItemStack[] containerContents = Arrays.copyOfRange(inventoryContents, 9, 35);
-        ItemStack[] armorContents = Arrays.copyOfRange(inventoryContents, 36, 39);
+        ItemStack[] hotbarContents = Arrays.copyOfRange(inventoryContents, 0, 9);
+        ItemStack[] containerContents = Arrays.copyOfRange(inventoryContents, 9, 36);
+        ItemStack[] armorContents = Arrays.copyOfRange(inventoryContents, 36, 40);
         ItemStack offHandContent = inventoryContents[40];
 
         LinkedHashMap<String, byte[]> items = new LinkedHashMap<>();
