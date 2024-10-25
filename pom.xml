@@ -6,7 +6,7 @@
 
     <groupId>de.cubenation</groupId>
     <artifactId>CNInventories</artifactId>
-    <version>1.4.1-RELEASE</version>
+    <version>1.4.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,8 +14,8 @@
 
     <repositories>
         <repository>
-            <id>org.lichtspiele.nexus.public</id>
-            <url>https://nexus.lichtspiele.org/repository/maven-public/</url>
+            <id>projectshard.public</id>
+            <url>https://repo.projectshard.dev/repository/maven-public/</url>
         </repository>
         <repository>
             <id>paper</id>
@@ -25,20 +25,14 @@
 
     <distributionManagement>
         <repository>
-            <id>org.lichtspiele.nexus.release</id>
-            <url>https://nexus.lichtspiele.org/repository/maven-releases/</url>
+            <id>dev.projectshard.repo.releases</id>
+            <url>https://repo.projectshard.dev/repository/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>org.lichtspiele.nexus.snapshot</id>
-            <url>https://nexus.lichtspiele.org/repository/maven-snapshots/</url>
+            <id>dev.projectshard.repo.snapshots</id>
+            <url>https://repo.projectshard.dev/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <scm>
-        <connection>scm:git:ssh://git@bitbucket.org/cncampfiretools/cninventories.git</connection>
-        <url>http://bitbucket.org/cubenation/cninventories</url>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/cubenation/cninventories.git</developerConnection>
-    </scm>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
