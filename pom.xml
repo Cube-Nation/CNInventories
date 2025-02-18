@@ -6,7 +6,7 @@
 
     <groupId>de.cubenation</groupId>
     <artifactId>CNInventories</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,14 +72,14 @@
         <dependency>
             <groupId>de.cubenation.api</groupId>
             <artifactId>Bedrock</artifactId>
-            <version>1.15.2-SNAPSHOT</version>
+            <version>1.21.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

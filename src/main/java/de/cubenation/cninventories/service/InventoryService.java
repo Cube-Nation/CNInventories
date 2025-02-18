@@ -6,8 +6,8 @@ import de.cubenation.api.bedrock.exception.ServiceReloadException;
 import de.cubenation.api.bedrock.service.AbstractService;
 import de.cubenation.cninventories.CNInventoriesPlugin;
 import de.cubenation.cninventories.util.InventoryUtil;
-import de.cubenation.cninventories.util.ItemStackUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -196,10 +196,20 @@ public class InventoryService extends AbstractService {
             player.getEnderChest().setContents(enderChestContent);
         }
 
-        if(c.get("health") != null)
-            player.setHealth(c.getDouble("health"));
-        else
-            player.setHealth(20.0);
+        // clear current effects
+        for(PotionEffect effect : player.getActivePotionEffects())
+            player.removePotionEffect(effect.getType());
+        // apply saved effects
+        if(c.get("potion-effects") != null)
+            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
+
+        double healthCap = player.getAttribute(Attribute.MAX_HEALTH).getValue();
+        if (c.get("health") != null) {
+            double health = Math.min(healthCap, c.getDouble("health"));
+            player.setHealth(health);
+        } else {
+            player.setHealth(healthCap);
+        }
 
         if(c.get("hunger") != null)
             player.setFoodLevel(c.getInt("hunger"));
@@ -227,14 +237,6 @@ public class InventoryService extends AbstractService {
 
         if(c.get("exhaustion") != null)
             player.setExhaustion(c.getInt("exhaustion"));
-
-
-        // clear current effects
-        for(PotionEffect effect : player.getActivePotionEffects())
-            player.removePotionEffect(effect.getType());
-        // apply saved effects
-        if(c.get("potion-effects") != null)
-            player.addPotionEffects((Collection<PotionEffect>) c.get("potion-effects"));
 
         return true;
     }
